@@ -1,9 +1,9 @@
 {
-  "network": "botchainTestnet",
-  "chainId": 968,
-  "rpcUrl": "https://rpc.bohr.life",
-  "explorerUrl": "https://scan.bohr.life",
-  "nftAddress": "0x50Eda285Fdc45AE741eF4F23110E9BE4a3CFec61",
-  "marketplaceAddress": "0x526676Bed606B8942dd1Eb18b7E6090E14C5a30A",
-  "deployedAt": "2026-09-13T05:17:11.091Z"
+  "network": "botchainMainnet",
+  "chainId": 677,
+  "rpcUrl": "https://rpc.botchain.ai",
+  "explorerUrl": "https://scan.botchain.ai",
+  "nftAddress": "0x245bDD263dEb51bA9325F7CA76F004c601F6D574",
+  "marketplaceAddress": "0x841015D7b91c325aA58adB00BbAFAe367A9b02D3",
+  "deployedAt": "2026-09-22T06:33:25.182Z"
 }

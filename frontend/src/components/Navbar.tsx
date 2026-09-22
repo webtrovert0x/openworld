@@ -14,16 +14,22 @@ import {
   Wallet, 
   LogOut 
 } from 'lucide-react';
-import { botchainTestnet } from '../config/chains';
+import deployed from '../config/deployedContracts.json';
+import { botchainMainnet, botchainTestnet } from '../config/chains';
 
 export default function Navbar() {
   const pathname = usePathname();
   const { open } = useAppKit();
-  const { address, isConnected } = useAccount();
+  const { address, isConnected, chainId } = useAccount();
   const { disconnect } = useDisconnect();
+
+  const activeChainId = chainId || deployed?.chainId || botchainMainnet.id;
+  const isMainnet = activeChainId === 677;
+  const activeChain = isMainnet ? botchainMainnet : botchainTestnet;
+
   const { data: balanceData } = useBalance({
     address: address,
-    chainId: botchainTestnet.id,
+    chainId: activeChain.id,
   });
 
   const navLinks = [
@@ -80,15 +86,19 @@ export default function Navbar() {
 
         {/* Right: Network & Wallet */}
         <div className="flex items-center gap-3">
-          {/* Botchain Testnet Badge */}
+          {/* Network Badge */}
           <a
-            href="https://scan.bohr.life"
+            href={activeChain.blockExplorers?.default.url || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life')}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-emerald-500/30 text-[11px] font-mono text-emerald-400 hover:border-emerald-500/60 transition-colors"
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border text-[11px] font-mono transition-colors ${
+              isMainnet 
+                ? 'border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60'
+                : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
+            }`}
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-            <span>Botchain (968)</span>
+            <span className={`w-1.5 h-1.5 rounded-full ${isMainnet ? 'bg-indigo-400' : 'bg-emerald-500'}`}></span>
+            <span>{isMainnet ? 'Botchain (677)' : 'Botchain (968)'}</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
 

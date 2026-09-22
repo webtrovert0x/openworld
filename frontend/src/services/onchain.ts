@@ -1,5 +1,6 @@
 import { createPublicClient, http, formatEther } from 'viem';
-import { botchainTestnet } from '../config/chains';
+import { botchainMainnet, botchainTestnet } from '../config/chains';
+import deployed from '../config/deployedContracts.json';
 import { GENESIS_NFT_ADDRESS, MARKETPLACE_ADDRESS, NFT_ABI, MARKETPLACE_ABI } from '../config/contracts';
 
 export interface OnchainNFT {
@@ -19,9 +20,12 @@ export interface OnchainNFT {
   rawUri: string;
 }
 
+const activeChain = (deployed?.chainId === 677) ? botchainMainnet : botchainTestnet;
+const activeRpc = deployed?.rpcUrl || (deployed?.chainId === 677 ? 'https://rpc.botchain.ai' : 'https://rpc.bohr.life');
+
 export const publicClient = createPublicClient({
-  chain: botchainTestnet,
-  transport: http('https://rpc.bohr.life'),
+  chain: activeChain,
+  transport: http(activeRpc),
 });
 
 function resolveIpfsUrl(url: string): string {

@@ -10,8 +10,9 @@ module.exports = {
     settings: {
       optimizer: {
         enabled: true,
-        runs: 200,
+        runs: 1,
       },
+      viaIR: false,
       evmVersion: "cancun",
     },
   },
@@ -22,10 +23,16 @@ module.exports = {
       chainId: 968,
       accounts: [PRIVATE_KEY],
     },
+    botchainMainnet: {
+      url: "https://rpc.botchain.ai",
+      chainId: 677,
+      accounts: [PRIVATE_KEY],
+    },
   },
   etherscan: {
     apiKey: {
       botchainTestnet: "any",
+      botchainMainnet: "any",
     },
     customChains: [
       {
@@ -34,6 +41,14 @@ module.exports = {
         urls: {
           apiURL: "https://scan.bohr.life/api",
           browserURL: "https://scan.bohr.life",
+        },
+      },
+      {
+        network: "botchainMainnet",
+        chainId: 677,
+        urls: {
+          apiURL: "https://scan.botchain.ai/api",
+          browserURL: "https://scan.botchain.ai",
         },
       },
     ],

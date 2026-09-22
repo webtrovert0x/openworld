@@ -3,16 +3,13 @@ pragma solidity ^0.8.24;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
-import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Pausable.sol";
 
 /**
  * @title OpenWorldMarketplace
  * @dev Decentralized NFT Marketplace engine for Botchain with native BOT settlements,
  *      escrowless direct listings, offers, and automated EIP-2981 royalties.
  */
-contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
+contract OpenWorldMarketplace {
 
     struct Listing {
         address seller;
@@ -30,6 +27,10 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
         bool isActive;
     }
 
+    address public owner;
+    bool public paused;
+    uint256 private _status = 1;
+
     // Platform fee in basis points (100 = 1%)
     uint256 public platformFeeBps = 150; // 1.5%
     address public feeRecipient;
@@ -39,13 +40,6 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
 
     // nftContract => tokenId => bidder => Offer
     mapping(address => mapping(uint256 => mapping(address => Offer))) public offers;
-
-    // Quick tracking of listed items for frontend indexing
-    struct MarketItemKey {
-        address nftContract;
-        uint256 tokenId;
-    }
-    MarketItemKey[] private _activeListingKeys;
 
     // Events
     event ItemListed(
@@ -107,10 +101,32 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
 
     event PlatformFeeUpdated(uint256 newFeeBps);
     event FeeRecipientUpdated(address newRecipient);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event Paused(address account);
+    event Unpaused(address account);
 
-    constructor(address _feeRecipient) Ownable(msg.sender) {
+    modifier onlyOwner() {
+        require(msg.sender == owner, "Caller is not the owner");
+        _;
+    }
+
+    modifier whenNotPaused() {
+        require(!paused, "Contract is paused");
+        _;
+    }
+
+    modifier nonReentrant() {
+        require(_status == 1, "ReentrancyGuard: reentrant call");
+        _status = 2;
+        _;
+        _status = 1;
+    }
+
+    constructor(address _feeRecipient) {
         require(_feeRecipient != address(0), "Invalid fee recipient");
+        owner = msg.sender;
         feeRecipient = _feeRecipient;
+        emit OwnershipTransferred(address(0), msg.sender);
     }
 
     /* ========================================================================= */
@@ -143,8 +159,6 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
             listedAt: block.timestamp
         });
 
-        _activeListingKeys.push(MarketItemKey(nftContract, tokenId));
-
         emit ItemListed(msg.sender, nftContract, tokenId, price, block.timestamp);
     }
 
@@ -175,7 +189,7 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
     ) external nonReentrant {
         Listing storage listing = listings[nftContract][tokenId];
         require(listing.isActive, "Listing is not active");
-        require(listing.seller == msg.sender || msg.sender == owner(), "Unauthorized");
+        require(listing.seller == msg.sender || msg.sender == owner, "Unauthorized");
 
         listing.isActive = false;
 
@@ -250,14 +264,16 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
         require(durationInSeconds <= 30 days, "Duration cannot exceed 30 days");
 
         IERC721 nft = IERC721(nftContract);
-        require(nft.ownerOf(tokenId) != msg.sender, "Cannot offer on owned NFT");
+        require(nft.ownerOf(tokenId) != address(0), "Token does not exist");
+        require(nft.ownerOf(tokenId) != msg.sender, "Cannot make offer on own item");
 
         // If existing offer exists from this bidder, refund old one
-        Offer storage existingOffer = offers[nftContract][tokenId][msg.sender];
-        if (existingOffer.isActive) {
-            uint256 oldAmount = existingOffer.amount;
-            existingOffer.isActive = false;
-            payable(msg.sender).transfer(oldAmount);
+        Offer storage currentOffer = offers[nftContract][tokenId][msg.sender];
+        if (currentOffer.isActive) {
+            uint256 refundAmount = currentOffer.amount;
+            currentOffer.amount = 0;
+            currentOffer.isActive = false;
+            payable(msg.sender).transfer(refundAmount);
         }
 
         uint256 expiresAt = block.timestamp + durationInSeconds;
@@ -279,13 +295,13 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
         uint256 tokenId
     ) external nonReentrant {
         Offer storage offer = offers[nftContract][tokenId][msg.sender];
-        require(offer.isActive, "No active offer found");
+        require(offer.isActive, "No active offer to cancel");
 
-        uint256 amountToRefund = offer.amount;
+        uint256 refundAmount = offer.amount;
         offer.isActive = false;
         offer.amount = 0;
 
-        payable(msg.sender).transfer(amountToRefund);
+        payable(msg.sender).transfer(refundAmount);
 
         emit OfferCanceled(msg.sender, nftContract, tokenId);
     }
@@ -354,16 +370,13 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
         royaltyFee = 0;
         royaltyReceiver = address(0);
 
-        // Check if NFT supports ERC2981
-        if (IERC165(nftContract).supportsInterface(type(IERC2981).interfaceId)) {
-            try IERC2981(nftContract).royaltyInfo(tokenId, price) returns (address receiver, uint256 rFee) {
-                if (receiver != address(0) && rFee < price) {
-                    royaltyFee = rFee;
-                    royaltyReceiver = receiver;
-                }
-            } catch {
-                royaltyFee = 0;
+        try IERC2981(nftContract).royaltyInfo(tokenId, price) returns (address receiver, uint256 rFee) {
+            if (receiver != address(0) && rFee < price) {
+                royaltyFee = rFee;
+                royaltyReceiver = receiver;
             }
+        } catch {
+            royaltyFee = 0;
         }
 
         sellerProceeds = price - platformFee - royaltyFee;
@@ -393,11 +406,19 @@ contract OpenWorldMarketplace is ReentrancyGuard, Ownable, Pausable {
         emit FeeRecipientUpdated(newRecipient);
     }
 
+    function transferOwnership(address newOwner) external onlyOwner {
+        require(newOwner != address(0), "New owner cannot be zero address");
+        emit OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
+    }
+
     function pause() external onlyOwner {
-        _pause();
+        paused = true;
+        emit Paused(msg.sender);
     }
 
     function unpause() external onlyOwner {
-        _unpause();
+        paused = false;
+        emit Unpaused(msg.sender);
     }
 }

@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
@@ -9,11 +9,13 @@ import "@openzeppelin/contracts/access/Ownable.sol";
  * @title OpenWorldNFT
  * @dev Genesis and Creator collection NFT standard on Botchain with EIP-2981 Royalties.
  */
-contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
+contract OpenWorldNFT is ERC721, ERC2981, Ownable {
     uint256 private _nextTokenId;
     string public collectionDescription;
     uint256 public maxSupply;
-    uint256 public mintPrice; // in native BOT (0 for free mint studio)
+    uint256 public mintPrice; // in native BOT
+
+    mapping(uint256 => string) private _tokenURIs;
 
     event NFTMinted(address indexed recipient, uint256 indexed tokenId, string tokenURI, uint96 royaltyBps);
 
@@ -50,7 +52,7 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
         _nextTokenId++;
 
         _safeMint(msg.sender, tokenId);
-        _setTokenURI(tokenId, uri);
+        _tokenURIs[tokenId] = uri;
 
         if (royaltyFeeBps > 0) {
             _setTokenRoyalty(tokenId, msg.sender, royaltyFeeBps);
@@ -58,7 +60,6 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
 
         emit NFTMinted(msg.sender, tokenId, uri, royaltyFeeBps);
 
-        // Refund excess BOT
         if (msg.value > mintPrice) {
             payable(msg.sender).transfer(msg.value - mintPrice);
         }
@@ -85,7 +86,7 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
             _nextTokenId++;
 
             _safeMint(msg.sender, tokenId);
-            _setTokenURI(tokenId, uris[i]);
+            _tokenURIs[tokenId] = uris[i];
 
             if (royaltyFeeBps > 0) {
                 _setTokenRoyalty(tokenId, msg.sender, royaltyFeeBps);
@@ -95,13 +96,17 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
             emit NFTMinted(msg.sender, tokenId, uris[i], royaltyFeeBps);
         }
 
-        // Refund excess BOT
         uint256 totalCost = mintPrice * count;
         if (msg.value > totalCost) {
             payable(msg.sender).transfer(msg.value - totalCost);
         }
 
         return tokenIds;
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireOwned(tokenId);
+        return _tokenURIs[tokenId];
     }
 
     function totalSupply() external view returns (uint256) {
@@ -118,15 +123,10 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
         payable(owner()).transfer(balance);
     }
 
-    // Overrides required by Solidity for multiple inheritance
-    function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
-
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721URIStorage, ERC2981)
+        override(ERC721, ERC2981)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);

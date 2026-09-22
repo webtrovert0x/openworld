@@ -12,12 +12,17 @@ async function main() {
   console.log("💰 Deployer Balance:", ethers.formatEther(balance), "BOT");
   console.log("--------------------------------------------------");
 
+  const chainId = (await ethers.provider.getNetwork()).chainId;
+  const isMainnet = Number(chainId) === 677;
+
   // 1. Deploy Genesis Collection NFT Contract
   const OpenWorldNFT = await ethers.getContractFactory("OpenWorldNFT");
   const nft = await OpenWorldNFT.deploy(
     "OpenWorld Genesis",
     "OWG",
-    "The genesis flagship cyberpunk collection on Botchain Testnet",
+    isMainnet 
+      ? "The genesis flagship cyberpunk collection on Botchain Mainnet" 
+      : "The genesis flagship cyberpunk collection on Botchain Testnet",
     10000,
     ethers.parseEther("0.1"), // 0.1 BOT mint price
     deployer.address,
@@ -36,10 +41,10 @@ async function main() {
 
   // 3. Export Contract Addresses and ABIs for Frontend
   const deployedInfo = {
-    network: "botchainTestnet",
-    chainId: 968,
-    rpcUrl: "https://rpc.bohr.life",
-    explorerUrl: "https://scan.bohr.life",
+    network: isMainnet ? "botchainMainnet" : "botchainTestnet",
+    chainId: Number(chainId),
+    rpcUrl: isMainnet ? "https://rpc.botchain.ai" : "https://rpc.bohr.life",
+    explorerUrl: isMainnet ? "https://scan.botchain.ai" : "https://scan.bohr.life",
     nftAddress: nftAddress,
     marketplaceAddress: marketplaceAddress,
     deployedAt: new Date().toISOString(),

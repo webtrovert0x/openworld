@@ -166,14 +166,6 @@ interface IERC165 {
 }
 
 
-// File @openzeppelin/contracts/interfaces/IERC165.sol@v5.6.1
-
-// Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.4.0) (interfaces/IERC165.sol)
-
-pragma solidity >=0.4.16;
-
-
 // File @openzeppelin/contracts/interfaces/IERC2981.sol@v5.6.1
 
 // Original license: SPDX_License_Identifier: MIT
@@ -199,173 +191,6 @@ interface IERC2981 is IERC165 {
         uint256 tokenId,
         uint256 salePrice
     ) external view returns (address receiver, uint256 royaltyAmount);
-}
-
-
-// File @openzeppelin/contracts/token/ERC721/IERC721.sol@v5.6.1
-
-// Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.4.0) (token/ERC721/IERC721.sol)
-
-pragma solidity >=0.6.2;
-
-/**
- * @dev Required interface of an ERC-721 compliant contract.
- */
-interface IERC721 is IERC165 {
-    /**
-     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
-     */
-    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
-
-    /**
-     * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
-     */
-    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
-
-    /**
-     * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
-     */
-    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
-
-    /**
-     * @dev Returns the number of tokens in ``owner``'s account.
-     */
-    function balanceOf(address owner) external view returns (uint256 balance);
-
-    /**
-     * @dev Returns the owner of the `tokenId` token.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function ownerOf(uint256 tokenId) external view returns (address owner);
-
-    /**
-     * @dev Safely transfers `tokenId` token from `from` to `to`.
-     *
-     * Requirements:
-     *
-     * - `from` cannot be the zero address.
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must exist and be owned by `from`.
-     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon
-     *   a safe transfer.
-     *
-     * Emits a {Transfer} event.
-     */
-    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
-
-    /**
-     * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
-     * are aware of the ERC-721 protocol to prevent tokens from being forever locked.
-     *
-     * Requirements:
-     *
-     * - `from` cannot be the zero address.
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must exist and be owned by `from`.
-     * - If the caller is not `from`, it must have been allowed to move this token by either {approve} or
-     *   {setApprovalForAll}.
-     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon
-     *   a safe transfer.
-     *
-     * Emits a {Transfer} event.
-     */
-    function safeTransferFrom(address from, address to, uint256 tokenId) external;
-
-    /**
-     * @dev Transfers `tokenId` token from `from` to `to`.
-     *
-     * WARNING: Note that the caller is responsible to confirm that the recipient is capable of receiving ERC-721
-     * or else they may be permanently lost. Usage of {safeTransferFrom} prevents loss, though the caller must
-     * understand this adds an external call which potentially creates a reentrancy vulnerability.
-     *
-     * Requirements:
-     *
-     * - `from` cannot be the zero address.
-     * - `to` cannot be the zero address.
-     * - `tokenId` token must be owned by `from`.
-     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
-     *
-     * Emits a {Transfer} event.
-     */
-    function transferFrom(address from, address to, uint256 tokenId) external;
-
-    /**
-     * @dev Gives permission to `to` to transfer `tokenId` token to another account.
-     * The approval is cleared when the token is transferred.
-     *
-     * Only a single account can be approved at a time, so approving the zero address clears previous approvals.
-     *
-     * Requirements:
-     *
-     * - The caller must own the token or be an approved operator.
-     * - `tokenId` must exist.
-     *
-     * Emits an {Approval} event.
-     */
-    function approve(address to, uint256 tokenId) external;
-
-    /**
-     * @dev Approve or remove `operator` as an operator for the caller.
-     * Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
-     *
-     * Requirements:
-     *
-     * - The `operator` cannot be the address zero.
-     *
-     * Emits an {ApprovalForAll} event.
-     */
-    function setApprovalForAll(address operator, bool approved) external;
-
-    /**
-     * @dev Returns the account approved for `tokenId` token.
-     *
-     * Requirements:
-     *
-     * - `tokenId` must exist.
-     */
-    function getApproved(uint256 tokenId) external view returns (address operator);
-
-    /**
-     * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
-     *
-     * See {setApprovalForAll}
-     */
-    function isApprovedForAll(address owner, address operator) external view returns (bool);
-}
-
-
-// File @openzeppelin/contracts/interfaces/IERC721.sol@v5.6.1
-
-// Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.4.0) (interfaces/IERC721.sol)
-
-pragma solidity >=0.6.2;
-
-
-// File @openzeppelin/contracts/interfaces/IERC4906.sol@v5.6.1
-
-// Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.4.0) (interfaces/IERC4906.sol)
-
-pragma solidity >=0.6.2;
-
-
-/// @title ERC-721 Metadata Update Extension
-interface IERC4906 is IERC165, IERC721 {
-    /// @dev This event emits when the metadata of a token is changed.
-    /// So that the third-party platforms such as NFT market could
-    /// timely update the images and related attributes of the NFT.
-    event MetadataUpdate(uint256 _tokenId);
-
-    /// @dev This event emits when the metadata of a range of tokens is changed.
-    /// So that the third-party platforms such as NFT market could
-    /// timely update the images and related attributes of the NFTs.
-    event BatchMetadataUpdate(uint256 _fromTokenId, uint256 _toTokenId);
 }
 
 
@@ -700,6 +525,143 @@ interface IERC1155Errors {
      * @param valuesLength Length of the array of token amounts
      */
     error ERC1155InvalidArrayLength(uint256 idsLength, uint256 valuesLength);
+}
+
+
+// File @openzeppelin/contracts/token/ERC721/IERC721.sol@v5.6.1
+
+// Original license: SPDX_License_Identifier: MIT
+// OpenZeppelin Contracts (last updated v5.4.0) (token/ERC721/IERC721.sol)
+
+pragma solidity >=0.6.2;
+
+/**
+ * @dev Required interface of an ERC-721 compliant contract.
+ */
+interface IERC721 is IERC165 {
+    /**
+     * @dev Emitted when `tokenId` token is transferred from `from` to `to`.
+     */
+    event Transfer(address indexed from, address indexed to, uint256 indexed tokenId);
+
+    /**
+     * @dev Emitted when `owner` enables `approved` to manage the `tokenId` token.
+     */
+    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenId);
+
+    /**
+     * @dev Emitted when `owner` enables or disables (`approved`) `operator` to manage all of its assets.
+     */
+    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);
+
+    /**
+     * @dev Returns the number of tokens in ``owner``'s account.
+     */
+    function balanceOf(address owner) external view returns (uint256 balance);
+
+    /**
+     * @dev Returns the owner of the `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function ownerOf(uint256 tokenId) external view returns (address owner);
+
+    /**
+     * @dev Safely transfers `tokenId` token from `from` to `to`.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must exist and be owned by `from`.
+     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon
+     *   a safe transfer.
+     *
+     * Emits a {Transfer} event.
+     */
+    function safeTransferFrom(address from, address to, uint256 tokenId, bytes calldata data) external;
+
+    /**
+     * @dev Safely transfers `tokenId` token from `from` to `to`, checking first that contract recipients
+     * are aware of the ERC-721 protocol to prevent tokens from being forever locked.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must exist and be owned by `from`.
+     * - If the caller is not `from`, it must have been allowed to move this token by either {approve} or
+     *   {setApprovalForAll}.
+     * - If `to` refers to a smart contract, it must implement {IERC721Receiver-onERC721Received}, which is called upon
+     *   a safe transfer.
+     *
+     * Emits a {Transfer} event.
+     */
+    function safeTransferFrom(address from, address to, uint256 tokenId) external;
+
+    /**
+     * @dev Transfers `tokenId` token from `from` to `to`.
+     *
+     * WARNING: Note that the caller is responsible to confirm that the recipient is capable of receiving ERC-721
+     * or else they may be permanently lost. Usage of {safeTransferFrom} prevents loss, though the caller must
+     * understand this adds an external call which potentially creates a reentrancy vulnerability.
+     *
+     * Requirements:
+     *
+     * - `from` cannot be the zero address.
+     * - `to` cannot be the zero address.
+     * - `tokenId` token must be owned by `from`.
+     * - If the caller is not `from`, it must be approved to move this token by either {approve} or {setApprovalForAll}.
+     *
+     * Emits a {Transfer} event.
+     */
+    function transferFrom(address from, address to, uint256 tokenId) external;
+
+    /**
+     * @dev Gives permission to `to` to transfer `tokenId` token to another account.
+     * The approval is cleared when the token is transferred.
+     *
+     * Only a single account can be approved at a time, so approving the zero address clears previous approvals.
+     *
+     * Requirements:
+     *
+     * - The caller must own the token or be an approved operator.
+     * - `tokenId` must exist.
+     *
+     * Emits an {Approval} event.
+     */
+    function approve(address to, uint256 tokenId) external;
+
+    /**
+     * @dev Approve or remove `operator` as an operator for the caller.
+     * Operators can call {transferFrom} or {safeTransferFrom} for any token owned by the caller.
+     *
+     * Requirements:
+     *
+     * - The `operator` cannot be the address zero.
+     *
+     * Emits an {ApprovalForAll} event.
+     */
+    function setApprovalForAll(address operator, bool approved) external;
+
+    /**
+     * @dev Returns the account approved for `tokenId` token.
+     *
+     * Requirements:
+     *
+     * - `tokenId` must exist.
+     */
+    function getApproved(uint256 tokenId) external view returns (address operator);
+
+    /**
+     * @dev Returns if the `operator` is allowed to manage all of the assets of `owner`.
+     *
+     * See {setApprovalForAll}
+     */
+    function isApprovedForAll(address owner, address operator) external view returns (bool);
 }
 
 
@@ -4181,70 +4143,6 @@ abstract contract ERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Er
 }
 
 
-// File @openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol@v5.6.1
-
-// Original license: SPDX_License_Identifier: MIT
-// OpenZeppelin Contracts (last updated v5.6.0) (token/ERC721/extensions/ERC721URIStorage.sol)
-
-pragma solidity ^0.8.24;
-
-
-
-
-/**
- * @dev ERC-721 token with storage based token URI management.
- */
-abstract contract ERC721URIStorage is IERC4906, ERC721 {
-    // Interface ID as defined in ERC-4906. This does not correspond to a traditional interface ID as ERC-4906 only
-    // defines events and does not include any external function.
-    bytes4 private constant ERC4906_INTERFACE_ID = bytes4(0x49064906);
-
-    // Optional mapping for token URIs
-    mapping(uint256 tokenId => string) private _tokenURIs;
-
-    /// @inheritdoc IERC165
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, IERC165) returns (bool) {
-        return interfaceId == ERC4906_INTERFACE_ID || super.supportsInterface(interfaceId);
-    }
-
-    /// @inheritdoc IERC721Metadata
-    function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
-        _requireOwned(tokenId);
-
-        string memory base = _baseURI();
-        string memory suffix = _suffixURI(tokenId);
-
-        // If there is no base URI, return the token URI.
-        if (bytes(base).length == 0) {
-            return suffix;
-        }
-        // If both are set, concatenate the baseURI and tokenURI (via string.concat).
-        if (bytes(suffix).length > 0) {
-            return string.concat(base, suffix);
-        }
-
-        return super.tokenURI(tokenId);
-    }
-
-    /**
-     * @dev Sets `_tokenURI` as the tokenURI of `tokenId`.
-     *
-     * Emits {IERC4906-MetadataUpdate}.
-     */
-    function _setTokenURI(uint256 tokenId, string memory _tokenURI) internal virtual {
-        _tokenURIs[tokenId] = _tokenURI;
-        emit MetadataUpdate(tokenId);
-    }
-
-    /**
-     * @dev Returns the suffix part of the tokenURI for `tokenId`.
-     */
-    function _suffixURI(uint256 tokenId) internal view virtual returns (string memory) {
-        return _tokenURIs[tokenId];
-    }
-}
-
-
 // File contracts/OpenWorldNFT.sol
 
 // Original license: SPDX_License_Identifier: MIT
@@ -4256,11 +4154,13 @@ pragma solidity ^0.8.24;
  * @title OpenWorldNFT
  * @dev Genesis and Creator collection NFT standard on Botchain with EIP-2981 Royalties.
  */
-contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
+contract OpenWorldNFT is ERC721, ERC2981, Ownable {
     uint256 private _nextTokenId;
     string public collectionDescription;
     uint256 public maxSupply;
-    uint256 public mintPrice; // in native BOT (0 for free mint studio)
+    uint256 public mintPrice; // in native BOT
+
+    mapping(uint256 => string) private _tokenURIs;
 
     event NFTMinted(address indexed recipient, uint256 indexed tokenId, string tokenURI, uint96 royaltyBps);
 
@@ -4297,7 +4197,7 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
         _nextTokenId++;
 
         _safeMint(msg.sender, tokenId);
-        _setTokenURI(tokenId, uri);
+        _tokenURIs[tokenId] = uri;
 
         if (royaltyFeeBps > 0) {
             _setTokenRoyalty(tokenId, msg.sender, royaltyFeeBps);
@@ -4305,7 +4205,6 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
 
         emit NFTMinted(msg.sender, tokenId, uri, royaltyFeeBps);
 
-        // Refund excess BOT
         if (msg.value > mintPrice) {
             payable(msg.sender).transfer(msg.value - mintPrice);
         }
@@ -4332,7 +4231,7 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
             _nextTokenId++;
 
             _safeMint(msg.sender, tokenId);
-            _setTokenURI(tokenId, uris[i]);
+            _tokenURIs[tokenId] = uris[i];
 
             if (royaltyFeeBps > 0) {
                 _setTokenRoyalty(tokenId, msg.sender, royaltyFeeBps);
@@ -4342,13 +4241,17 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
             emit NFTMinted(msg.sender, tokenId, uris[i], royaltyFeeBps);
         }
 
-        // Refund excess BOT
         uint256 totalCost = mintPrice * count;
         if (msg.value > totalCost) {
             payable(msg.sender).transfer(msg.value - totalCost);
         }
 
         return tokenIds;
+    }
+
+    function tokenURI(uint256 tokenId) public view override returns (string memory) {
+        _requireOwned(tokenId);
+        return _tokenURIs[tokenId];
     }
 
     function totalSupply() external view returns (uint256) {
@@ -4365,15 +4268,10 @@ contract OpenWorldNFT is ERC721URIStorage, ERC2981, Ownable {
         payable(owner()).transfer(balance);
     }
 
-    // Overrides required by Solidity for multiple inheritance
-    function tokenURI(uint256 tokenId) public view override(ERC721URIStorage) returns (string memory) {
-        return super.tokenURI(tokenId);
-    }
-
     function supportsInterface(bytes4 interfaceId)
         public
         view
-        override(ERC721URIStorage, ERC2981)
+        override(ERC721, ERC2981)
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
