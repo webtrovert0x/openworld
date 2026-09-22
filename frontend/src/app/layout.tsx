@@ -5,10 +5,17 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 export const metadata: Metadata = {
-  title: 'OpenWorld | NFT Marketplace on Botchain',
-  description: 'Institutional-grade NFT marketplace, trading engine, and launchpad on Botchain Testnet (Chain ID: 968). Native BOT settlements, zero escrow risks, and royalty enforcement.',
+  title: 'OpenWorld | NFT Marketplace & Launchpad on Botchain',
+  description: 'Institutional-grade NFT marketplace, trading engine, and launchpad on Botchain (Chain ID: 677). 100% on-chain metadata, native BOT settlements, and EIP-2981 royalty enforcement.',
   icons: {
-    icon: '/logo.png',
+    icon: [
+      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logo.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: [
+      { url: '/logo.png', sizes: '180x180', type: 'image/png' },
+    ],
   },
 };
 
