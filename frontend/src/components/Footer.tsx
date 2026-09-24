@@ -7,12 +7,11 @@ import { MARKETPLACE_ADDRESS, GENESIS_NFT_ADDRESS } from '../config/contracts';
 import deployed from '../config/deployedContracts.json';
 
 export default function Footer() {
-  const isMainnet = deployed?.chainId === 677;
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
-  const chainId = deployed?.chainId || (isMainnet ? 677 : 968);
-  const explorerUrl = deployed?.explorerUrl || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life');
-  const explorerName = isMainnet ? 'BotchainScan Explorer' : 'BohrScan Explorer';
-  const rpcUrl = deployed?.rpcUrl || (isMainnet ? 'https://rpc.botchain.ai' : 'https://rpc.bohr.life');
+  const networkName = 'Botchain Mainnet';
+  const chainId = 677;
+  const explorerUrl = 'https://scan.botchain.ai';
+  const explorerName = 'BotchainScan Explorer';
+  const rpcUrl = 'https://rpc.botchain.ai';
 
   return (
     <footer className="w-full bg-[#06070a] border-t border-[#232738] py-10 font-mono text-xs text-slate-400">

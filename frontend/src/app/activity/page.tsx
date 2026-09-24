@@ -125,7 +125,7 @@ export default function ActivityPage() {
             On-Chain Activity
           </h1>
           <p className="text-xs font-mono text-slate-400">
-            Real-time event ledger from {deployed?.chainId === 677 ? 'Botchain Mainnet' : 'Botchain Testnet'} contract <strong className="text-slate-300">{MARKETPLACE_ADDRESS}</strong>.
+            Real-time event ledger from Botchain Mainnet contract <strong className="text-slate-300">{MARKETPLACE_ADDRESS}</strong>.
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export default function ActivityPage() {
                   </td>
                   <td className="p-3.5 text-right">
                     <a
-                      href={`${deployed?.chainId === 677 ? 'https://scan.botchain.ai' : 'https://scan.bohr.life'}/tx/${ev.txHash}`}
+                      href={`https://scan.botchain.ai/tx/${ev.txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-cyan-400 hover:underline"

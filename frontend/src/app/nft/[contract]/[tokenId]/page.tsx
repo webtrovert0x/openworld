@@ -35,10 +35,9 @@ interface ExtendedNFT extends OnchainNFT {
 }
 
 export default function NFTDetailPage() {
-  const isMainnet = deployed?.chainId === 677;
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
-  const networkDisplay = isMainnet ? 'Botchain Mainnet (677)' : 'Botchain Testnet (968)';
-  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+  const networkName = 'Botchain Mainnet';
+  const networkDisplay = 'Botchain Mainnet (677)';
+  const explorerUrl = 'https://scan.botchain.ai';
 
   const params = useParams();
   const contractAddress = (params?.contract as string) || GENESIS_NFT_ADDRESS;

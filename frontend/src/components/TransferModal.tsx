@@ -25,10 +25,9 @@ export default function TransferModal({ nft, isOpen, onClose, onSuccess }: Trans
 
   const { writeContractAsync } = useWriteContract();
 
-  const isMainnet = deployed?.chainId === 677;
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
-  const explorerUrl = deployed?.explorerUrl || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life');
-  const explorerName = isMainnet ? 'BotchainScan' : 'BohrScan';
+  const networkName = 'Botchain Mainnet';
+  const explorerUrl = 'https://scan.botchain.ai';
+  const explorerName = 'BotchainScan';
 
   if (!isOpen || !nft) return null;
 

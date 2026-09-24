@@ -3,30 +3,30 @@
 <div align="center">
   <img src="frontend/public/logo.png" width="100" height="100" alt="OpenWorld Logo" />
   <h3>High-Performance Institutional NFT Marketplace & Launchpad</h3>
-  <p>Built specifically for <strong>Botchain Testnet (Chain ID: 968)</strong></p>
+  <p>Built specifically for <strong>Botchain Mainnet (Chain ID: 677)</strong></p>
 </div>
 
 ---
 
-## 🌐 Network Configuration (Botchain Testnet)
+## 🌐 Network Configuration (Botchain Mainnet)
 
 | Parameter | Value |
 | :--- | :--- |
-| **Network Name** | Botchain Testnet |
-| **Chain ID** | `968` |
-| **RPC Endpoint** | `https://rpc.bohr.life` |
+| **Network Name** | Botchain Mainnet |
+| **Chain ID** | `677` |
+| **RPC Endpoint** | `https://rpc.botchain.ai` |
 | **Native Token** | `BOT` |
 | **Total Supply** | 150 Million BOT |
-| **Block Explorer** | [https://scan.bohr.life](https://scan.bohr.life) |
+| **Block Explorer** | [https://scan.botchain.ai](https://scan.botchain.ai) |
 
 ---
 
 ## 📜 Deployed Smart Contracts
 
-| Contract | Address | BohrScan Explorer |
+| Contract | Address | BotchainScan Explorer |
 | :--- | :--- | :--- |
-| **OpenWorldNFT (Genesis Collection)** | `0x50Eda285Fdc45AE741eF4F23110E9BE4a3CFec61` | [View on BohrScan](https://scan.bohr.life/address/0x50Eda285Fdc45AE741eF4F23110E9BE4a3CFec61) |
-| **OpenWorldMarketplace** | `0x526676Bed606B8942dd1Eb18b7E6090E14C5a30A` | [View on BohrScan](https://scan.bohr.life/address/0x526676Bed606B8942dd1Eb18b7E6090E14C5a30A) |
+| **OpenWorldNFT (Genesis Collection)** | `0x245bDD263dEb51bA9325F7CA76F004c601F6D574` | [View on BotchainScan](https://scan.botchain.ai/address/0x245bDD263dEb51bA9325F7CA76F004c601F6D574) |
+| **OpenWorldMarketplace** | `0x841015D7b91c325aA58adB00BbAFAe367A9b02D3` | [View on BotchainScan (Verified)](https://scan.botchain.ai/address/0x841015D7b91c325aA58adB00BbAFAe367A9b02D3#code) |
 
 *Flattened Solidity files for 1-click explorer verification are available in [`contracts/flattened/`](contracts/flattened/).*
 
@@ -42,51 +42,35 @@
 - **EIP-2981 Creator Royalties**: Selectable royalty fee percentage (0% to 10%) enforced on all secondary marketplace trades.
 
 ### 2. ⚡ Institutional Trading Terminal (`/` & `/nft/[contract]/[tokenId]`)
-- **Zero Mock Data**: 100% live queries via pure JSON-RPC directly to Botchain Testnet smart contracts.
-- **Real-Time Market Stats**: Floor price, volume, active listing counters, and layout toggle (Grid / Table view).
-- **Direct On-Chain Trading**: Fixed-price listings and instant purchases in native `BOT` with automatic royalty and protocol fee distribution (1.5% fee).
-- **Escrowed Offer Engine**: Place and cancel escrowed bids with BOT locked safely in the contract until accepted or withdrawn.
-- **Direct Transfer Modal (`safeTransferFrom`)**: Send NFTs directly to any Botchain address with real-time address validation.
-- **Social Sharing**: 1-click Share to X (Twitter) and instant copy-to-clipboard link sharing.
+- **Zero Mock Data**: 100% live queries via pure JSON-RPC directly to Botchain Mainnet smart contracts.
+- **Dual View Modes**: Interactive Grid view and high-density financial Table view with instant sorting and filtering.
+- **Arbitrary Contract Discovery**: Input bar to index and explore any ERC-721 contract deployed on Botchain.
+- **Trading & Offers**: Direct fixed-price purchase flow with automatic 1.5% protocol fee routing, on-chain native BOT escrowed bidding, and instant item transfers.
 
-### 3. 📊 Activity & Portfolio Hub (`/activity` & `/profile`)
-- **Live Event Ledger**: Real-time event log indexing `ItemListed`, `ItemBought`, `ItemCancelled`, and `OfferCreated`.
-- **Portfolio Viewer**: Real-time BOT balance, owned NFTs, and active listed items.
+### 3. 🔍 Explorer & Activity Stream (`/activity`)
+- **Real-Time On-Chain Ledger**: Indexes contract event logs for sales, listings, and mints directly from Botchain Mainnet.
+- **Direct Block Explorer Integration**: Clickable links to transactions and addresses on BotchainScan.
 
----
-
-## 📁 Repository Structure
-
-```
-openworld/
-├── contracts/                  # Smart contract suite (Hardhat)
-│   ├── contracts/
-│   │   ├── OpenWorldNFT.sol    # ERC721 + EIP-2981 royalties + batch minting
-│   │   └── OpenWorldMarketplace.sol # Listings, purchases, escrow offers, fees
-│   ├── flattened/              # Verified single-file Solidity contracts
-│   ├── scripts/                # Deploy & seed scripts
-│   ├── test/                   # Automated contract test suite
-│   └── hardhat.config.js       # Botchain Testnet & Etherscan verify config
-│
-└── frontend/                   # Web3 DApp frontend (Next.js 16 + Turbopack)
-    ├── src/
-    │   ├── app/                # Next.js App Router (Marketplace, Detail, Studio, Activity, Portfolio)
-    │   ├── components/         # Modals (Buy, List, Offer, Transfer), Navbar, Cards
-    │   ├── config/             # Wagmi & Reown AppKit configuration, contract ABIs
-    │   ├── context/            # Web3 React Query & Wagmi context provider
-    │   ├── hooks/              # Custom reactive on-chain hooks
-    │   └── services/           # Viem JSON-RPC direct chain reader & metadata decoder
-    └── public/                 # Branding assets & logo
-```
+### 4. 💼 Collector Portfolio (`/profile`)
+- **Wallet-Centric Indexing**: View all NFTs owned or listed by the connected wallet.
+- **One-Click Listing & Price Adjustments**: Direct listing management from the profile view.
 
 ---
 
-## 🚀 Quick Start Guide
+## 🛠️ Tech Stack & Architecture
+
+- **Smart Contracts**: Solidity `0.8.24`, Hardhat, OpenZeppelin Contracts, EIP-2981 Royalties.
+- **Frontend**: Next.js 16 (Turbopack, App Router), React 19, TypeScript.
+- **Web3 Engine**: Viem, Wagmi v2, Reown AppKit.
+- **Styling**: Vanilla CSS Design System with dark cyberpunk monospace aesthetics.
+
+---
+
+## 🚀 Getting Started Locally
 
 ### Prerequisites
-- Node.js `>= 18.x`
-- npm or pnpm
-- MetaMask or any EVM Web3 wallet configured with Botchain Testnet
+- Node.js 18+ and npm installed
+- MetaMask or any EVM Web3 wallet configured with Botchain Mainnet (Chain ID: `677`)
 
 ---
 
@@ -101,11 +85,8 @@ npm install
 # Run automated test suite
 npx hardhat test
 
-# Deploy to Botchain Testnet (requires PRIVATE_KEY in .env)
-npx hardhat run scripts/deploy.js --network botchainTestnet
-
-# Seed initial on-chain NFTs
-npx hardhat run scripts/seedOnchain.js --network botchainTestnet
+# Deploy to Botchain Mainnet (requires PRIVATE_KEY in .env)
+npx hardhat run scripts/deploy.js --network botchainMainnet
 ```
 
 ---

@@ -31,10 +31,9 @@ export default function BuyModal({ nft, isOpen, onClose, onSuccess }: BuyModalPr
 
   const { writeContractAsync } = useWriteContract();
 
-  const isMainnet = deployed?.chainId === 677;
-  const explorerUrl = deployed?.explorerUrl || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life');
-  const explorerName = isMainnet ? 'BotchainScan' : 'BohrScan';
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const explorerUrl = 'https://scan.botchain.ai';
+  const explorerName = 'BotchainScan';
+  const networkName = 'Botchain Mainnet';
 
   if (!isOpen || !nft) return null;
 
@@ -89,7 +88,7 @@ export default function BuyModal({ nft, isOpen, onClose, onSuccess }: BuyModalPr
                 <span>Buy On-Chain NFT</span>
               </h2>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                {networkName} (Chain ID: {isMainnet ? '677' : '968'})
+                Botchain Mainnet (Chain ID: 677)
               </p>
             </div>
 

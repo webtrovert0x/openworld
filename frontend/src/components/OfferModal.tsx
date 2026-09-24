@@ -7,7 +7,7 @@ import { parseEther } from 'viem';
 import { X, Sparkles, Loader2, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
 import { OnchainNFT } from '../services/onchain';
 import { MARKETPLACE_ADDRESS, MARKETPLACE_ABI } from '../config/contracts';
-import { botchainMainnet, botchainTestnet } from '../config/chains';
+import { botchainMainnet } from '../config/chains';
 import deployed from '../config/deployedContracts.json';
 
 interface OfferModalProps {
@@ -20,10 +20,9 @@ interface OfferModalProps {
 export default function OfferModal({ nft, isOpen, onClose, onSuccess }: OfferModalProps) {
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
-  const isMainnet = deployed?.chainId === 677;
-  const activeChain = isMainnet ? botchainMainnet : botchainTestnet;
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
-  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+  const activeChain = botchainMainnet;
+  const networkName = 'Botchain Mainnet';
+  const explorerUrl = 'https://scan.botchain.ai';
 
   const { data: balanceData } = useBalance({
     address: address,

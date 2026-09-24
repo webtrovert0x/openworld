@@ -16,13 +16,9 @@ module.exports = {
       evmVersion: "cancun",
     },
   },
+  defaultNetwork: "botchainMainnet",
   networks: {
     hardhat: {},
-    botchainTestnet: {
-      url: "https://rpc.bohr.life",
-      chainId: 968,
-      accounts: [PRIVATE_KEY],
-    },
     botchainMainnet: {
       url: "https://rpc.botchain.ai",
       chainId: 677,
@@ -31,18 +27,9 @@ module.exports = {
   },
   etherscan: {
     apiKey: {
-      botchainTestnet: "any",
       botchainMainnet: "any",
     },
     customChains: [
-      {
-        network: "botchainTestnet",
-        chainId: 968,
-        urls: {
-          apiURL: "https://scan.bohr.life/api",
-          browserURL: "https://scan.bohr.life",
-        },
-      },
       {
         network: "botchainMainnet",
         chainId: 677,

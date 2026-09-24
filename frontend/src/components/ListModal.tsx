@@ -17,9 +17,8 @@ interface ListModalProps {
 }
 
 export default function ListModal({ nft, isOpen, onClose, onSuccess }: ListModalProps) {
-  const isMainnet = deployed?.chainId === 677;
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
-  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+  const networkName = 'Botchain Mainnet';
+  const explorerUrl = 'https://scan.botchain.ai';
 
   const { open } = useAppKit();
   const { isConnected } = useAccount();

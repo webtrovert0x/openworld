@@ -16,16 +16,15 @@ import {
 } from 'lucide-react';
 import { useOnchainMarket } from '../../hooks/useOnchainMarket';
 import { OnchainNFT } from '../../services/onchain';
-import { botchainMainnet, botchainTestnet } from '../../config/chains';
+import { botchainMainnet } from '../../config/chains';
 import { GENESIS_NFT_ADDRESS } from '../../config/contracts';
 import deployed from '../../config/deployedContracts.json';
 import ListModal from '../../components/ListModal';
 
 export default function ProfilePage() {
-  const isMainnet = deployed?.chainId === 677;
-  const activeChain = isMainnet ? botchainMainnet : botchainTestnet;
-  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
-  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+  const activeChain = botchainMainnet;
+  const networkName = 'Botchain Mainnet';
+  const explorerUrl = 'https://scan.botchain.ai';
 
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();

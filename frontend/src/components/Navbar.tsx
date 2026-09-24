@@ -15,17 +15,15 @@ import {
   LogOut 
 } from 'lucide-react';
 import deployed from '../config/deployedContracts.json';
-import { botchainMainnet, botchainTestnet } from '../config/chains';
+import { botchainMainnet } from '../config/chains';
 
 export default function Navbar() {
   const pathname = usePathname();
   const { open } = useAppKit();
-  const { address, isConnected, chainId } = useAccount();
+  const { address, isConnected } = useAccount();
   const { disconnect } = useDisconnect();
 
-  const activeChainId = chainId || deployed?.chainId || botchainMainnet.id;
-  const isMainnet = activeChainId === 677;
-  const activeChain = isMainnet ? botchainMainnet : botchainTestnet;
+  const activeChain = botchainMainnet;
 
   const { data: balanceData } = useBalance({
     address: address,
@@ -88,17 +86,13 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           {/* Network Badge */}
           <a
-            href={activeChain.blockExplorers?.default.url || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life')}
+            href="https://scan.botchain.ai"
             target="_blank"
             rel="noopener noreferrer"
-            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border text-[11px] font-mono transition-colors ${
-              isMainnet 
-                ? 'border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60'
-                : 'border-emerald-500/30 text-emerald-400 hover:border-emerald-500/60'
-            }`}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60 text-[11px] font-mono transition-colors"
           >
-            <span className={`w-1.5 h-1.5 rounded-full ${isMainnet ? 'bg-indigo-400' : 'bg-emerald-500'}`}></span>
-            <span>{isMainnet ? 'Botchain (677)' : 'Botchain (968)'}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
+            <span>Botchain (677)</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
 

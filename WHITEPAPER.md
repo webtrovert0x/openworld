@@ -3,7 +3,7 @@
 
 *Version 1.0 — September 2026*  
 *Protocol Team: OpenWorld Foundation*  
-*Network: Botchain (Chain ID: 968)*  
+*Network: Botchain (Chain ID: 677)*  
 
 ---
 
@@ -41,10 +41,10 @@ OpenWorld operates as a two-tier smart contract protocol consisting of the **Ass
 │                      OpenWorld Frontend DApp                    │
 │      (Next.js 16 + Wagmi v2 + Viem + Reown AppKit Wallet)       │
 └───────────────────────────────┬─────────────────────────────────┘
-                                │ JSON-RPC (https://rpc.bohr.life)
+                                │ JSON-RPC (https://rpc.botchain.ai)
                                 ▼
 ┌─────────────────────────────────────────────────────────────────┐
-│                   Botchain Testnet (Chain ID: 968)              │
+│                   Botchain Mainnet (Chain ID: 677)              │
 │                                                                 │
 │   ┌───────────────────────────┐   ┌───────────────────────────┐ │
 │   │     OpenWorldNFT.sol      │   │  OpenWorldMarketplace.sol │ │
@@ -59,106 +59,73 @@ OpenWorld operates as a two-tier smart contract protocol consisting of the **Ass
 
 ---
 
-### 2.1 The Asset Layer (`OpenWorldNFT.sol`)
+## 3. Asset Permanence & The Mint Engine
 
-`OpenWorldNFT` extends OpenZeppelin's `ERC721URIStorage`, `ERC2981`, and `Ownable` contracts:
+### 3.1 Fully On-Chain Base64 Data URI Scheme
+In contrast to standard implementations that store ephemeral URLs, OpenWorld serializes image blobs into base64 strings upon mint. The metadata JSON payload is generated dynamically and stored within the contract storage mapping:
 
-* **On-Chain Token URI Mapping**:
-  Images and attribute graphs are base64-encoded client-side into self-contained JSON data URIs (`data:application/json;base64,...`) and written directly to the contract's internal mapping:
-  $$\text{tokenURI}(k) = \text{Base64}(\text{Metadata JSON})$$
-* **Batch & Edition Minting**:
-  Enables single-token creation (`mint`) and mass edition distributions (`batchMint`) within a single transactional execution block.
-* **EIP-2981 Royalty Standard**:
-  Every token stores creator royalty specifications (receiver address and fee numerator up to 1,000 basis points / 10%).
+$$\text{tokenURI}(k) = \text{data:application/json;base64,} \, \mathcal{E}(\text{JSON}(name, desc, image, attrs))$$
+
+### 3.2 Edition Minting & Supply Dynamics
+Creators can choose between 1-of-1 masterworks or multi-edition releases (`1 of N`). The contract maintains an incrementing token counter and verifies caller signatures, assigning sequential on-chain IDs while guaranteeing metadata consistency across editions.
 
 ---
 
-### 2.2 The Exchange Layer (`OpenWorldMarketplace.sol`)
+## 4. Market Settlement & Exchange Mechanics
 
-The marketplace contract serves as the non-custodial liquidity clearinghouse for all Botchain digital assets.
+### 4.1 Non-Custodial Fixed-Price Atomic Swaps
+Sellers grant operator approval to `OpenWorldMarketplace.sol`. When a buyer initiates `buyItem(nftAddress, tokenId)` with the required native `BOT` value:
+1. Marketplace verifies token ownership and listing validity.
+2. The 1.5% protocol fee ($F_p$) is deducted:
+   $$F_p = \text{price} \times 0.015$$
+3. EIP-2981 royalty ($R$) is queried and routed directly to the creator royalty receiver.
+4. Net proceeds ($P_{\text{net}} = \text{price} - F_p - R$) are transferred directly to the seller.
+5. The ERC-721 token is transferred atomically from the seller to the buyer via `safeTransferFrom`.
 
-#### A. Fixed-Price Direct Listing & Settlement
-Sellers list tokens by approving the marketplace and setting a unit ask price in native `BOT`. When a buyer initiates `buyItem`:
-1. The contract validates `msg.value == listing.price`.
-2. EIP-2981 royalty fees are calculated and routed directly to the creator.
-3. Protocol fee ($1.5\% = 150 \text{ bps}$) is transferred to the treasury address.
-4. Net proceeds ($\text{Price} - \text{Royalty} - \text{Fee}$) are transferred to the seller.
-5. The NFT is atomically transferred to the buyer via `IERC721.safeTransferFrom`.
-
-$$\text{Seller Payout} = P_{\text{total}} - (\text{Fee}_{\text{protocol}} + \text{Royalty}_{\text{creator}})$$
-
-#### B. Escrowed Bid / Offer Engine
-Prospective buyers can place native `BOT` bids on any token by depositing funds directly into contract escrow via `makeOffer`.
-* **Capital Protection**: Funds remain locked in the contract until the offer is either accepted by the NFT owner or voluntarily cancelled by the bidder.
-* **Owner Execution**: The token owner can accept the bid via `acceptOffer`, instantly transferring the token and receiving the escrowed payment.
+### 4.2 Escrowed Native Offer Protocol
+Prospective buyers can place binding offers on unlisted or listed tokens by locking native `BOT` in the marketplace contract (`createOffer`). 
+- **Escrow Invariance**: The marketplace retains custody of the bidder's funds until the token owner accepts the bid (`acceptOffer`) or the bidder cancels the offer (`cancelOffer`).
+- **Reentrancy Protection**: All financial settlements employ OpenZeppelin's `ReentrancyGuard` with strict checks-effects-interactions patterns.
 
 ---
 
-## 3. Protocol Economics & Fee Structure
+## 5. Security & Formal Verifications
 
-| Parameter | Value | Description |
-| :--- | :--- | :--- |
-| **Protocol Marketplace Fee** | `1.5%` (150 bps) | Sustains protocol development, liquidity incentives, and treasury operations. |
-| **Creator Royalties** | `0.0% – 10.0%` (0–1000 bps) | Configurable by creator upon minting; enforced via EIP-2981 on secondary trades. |
-| **Settlement Currency** | `BOT` (Native) | Native gas and exchange token of the Botchain network. |
-| **Escrow Fee** | `0%` | Zero friction to place or cancel offers. |
-
----
-
-## 4. OpenSea Feature Parity & User Utilities
-
-OpenWorld incorporates key institutional and consumer-facing features:
-
-1. **Uncapped Supply Studio**:
-   Creators are not restricted by arbitrary caps; they can mint 1/1 masterpieces or large-scale community drops (e.g., 10,000 items).
-2. **Owner-Only Unlockable Content**:
-   Enables creators to embed encrypted download URLs, Discord keys, or physical claim codes that only the verified on-chain token owner can access.
-3. **Direct Wallet Transfer**:
-   Native interface integration for `safeTransferFrom`, allowing instant peer-to-peer asset transfers with recipient address validation.
-4. **Social Amplification Engine**:
-   One-click social sharing to X (Twitter) and instant clipboard sharing with rich dynamic metadata previews.
-5. **Real-Time Event Ledger**:
-   Sub-second indexing of contract events (`ItemListed`, `ItemBought`, `ItemCancelled`, `OfferCreated`) without relying on centralized closed-source indexing layers.
-
----
-
-## 5. Security & Threat Mitigation
-
-* **Reentrancy Protection**: All fund transfers and escrow releases utilize OpenZeppelin's `ReentrancyGuard` with strict Checks-Effects-Interactions patterns.
-* **Non-Custodial Escrow**: Sellers maintain custody of their NFTs until the instant of execution, preventing platform-wide lockups.
-* **Front-Running Resistance**: Strict state validation on listings and offers ensures obsolete orders cannot be executed against stale prices.
+* **Reentrancy Guards**: All external payout functions are protected against recursive execution vulnerabilities.
+* **Pull-over-Push Patterns**: Royalty and seller transfers are isolated per transaction.
+* **Role-Based Access Control**: Fee recipient addresses and emergency pause switches are secured under `Ownable`.
 
 ---
 
 ## 6. Deployed Contract Specifications
 
-The canonical contracts are deployed and operational on Botchain Testnet:
+The canonical contracts are deployed and operational on Botchain Mainnet:
 
 ```
-Network:           Botchain Testnet
-Chain ID:          968
-RPC:               https://rpc.bohr.life
+Network:           Botchain Mainnet
+Chain ID:          677
+RPC:               https://rpc.botchain.ai
 Native Token:      BOT
-Block Explorer:    https://scan.bohr.life
+Block Explorer:    https://scan.botchain.ai
 
-OpenWorldNFT:      0x50Eda285Fdc45AE741eF4F23110E9BE4a3CFec61
-Marketplace:       0x526676Bed606B8942dd1Eb18b7E6090E14C5a30A
+OpenWorldNFT:      0x245bDD263dEb51bA9325F7CA76F004c601F6D574
+Marketplace:       0x841015D7b91c325aA58adB00BbAFAe367A9b02D3 (Verified)
 ```
 
 ---
 
 ## 7. Roadmap
 
-* **Phase 1 (Current)**:
-  * Deployment of Genesis Core Contracts on Botchain Testnet.
+* **Phase 1 (Live on Mainnet)**:
+  * Deployment of Genesis Core Contracts on Botchain Mainnet.
   * Launch of Next.js 16 Trading Terminal & Mint Studio.
   * 100% On-Chain Metadata & Base64 storage implementation.
+  * Verified contract integration with BotchainScan.
 * **Phase 2**:
   * Multi-Token Sweep Cart & Batch Purchasing Engine.
   * Collection-wide Floor Bidding (Trait-agnostic escrow bids).
   * Trait floor analytics and rarity scoring engine.
 * **Phase 3**:
-  * Botchain Mainnet protocol deployment.
   * Decentralized creator launchpad with customized whitelist / merkle drop verification.
   * Cross-chain bridge integration for ecosystem expansion.
 

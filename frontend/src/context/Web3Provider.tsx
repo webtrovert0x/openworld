@@ -5,7 +5,7 @@ import { createAppKit } from '@reown/appkit/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { State, WagmiProvider } from 'wagmi';
 import { wagmiAdapter, config, projectId, networks } from '../config/wagmi';
-import { botchainMainnet, botchainTestnet } from '../config/chains';
+import { botchainMainnet } from '../config/chains';
 
 // Setup queryClient
 const queryClient = new QueryClient({
@@ -27,7 +27,7 @@ const metadata = {
 // Create AppKit instance
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [botchainMainnet, botchainTestnet] as any,
+  networks: [botchainMainnet] as any,
   projectId,
   metadata,
   defaultNetwork: botchainMainnet as any,

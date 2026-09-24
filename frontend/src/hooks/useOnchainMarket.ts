@@ -32,7 +32,7 @@ export function useOnchainMarket(contractAddress: string = GENESIS_NFT_ADDRESS) 
       setItems(res.items);
     } catch (err: any) {
       console.error('Failed to load onchain market data:', err);
-      setError(err?.message || 'Failed to sync with Botchain Testnet');
+      setError(err?.message || 'Failed to sync with Botchain Mainnet');
     } finally {
       setIsLoading(false);
     }
