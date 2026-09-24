@@ -16,16 +16,22 @@ import {
 } from 'lucide-react';
 import { useOnchainMarket } from '../../hooks/useOnchainMarket';
 import { OnchainNFT } from '../../services/onchain';
-import { botchainTestnet } from '../../config/chains';
+import { botchainMainnet, botchainTestnet } from '../../config/chains';
 import { GENESIS_NFT_ADDRESS } from '../../config/contracts';
+import deployed from '../../config/deployedContracts.json';
 import ListModal from '../../components/ListModal';
 
 export default function ProfilePage() {
+  const isMainnet = deployed?.chainId === 677;
+  const activeChain = isMainnet ? botchainMainnet : botchainTestnet;
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
   const { data: balanceData } = useBalance({
     address: address,
-    chainId: botchainTestnet.id,
+    chainId: activeChain.id,
   });
 
   const { items, isLoading, refresh } = useOnchainMarket(GENESIS_NFT_ADDRESS);
@@ -69,7 +75,7 @@ export default function ProfilePage() {
                   {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                 </button>
                 <a
-                  href={`https://scan.bohr.life/address/${address}`}
+                  href={`${explorerUrl}/address/${address}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-indigo-400 hover:underline flex items-center gap-0.5"
@@ -177,7 +183,7 @@ export default function ProfilePage() {
             <Layers className="w-10 h-10 text-slate-600 mx-auto" />
             <div className="text-sm font-bold text-white">No Tokens Owned in this Wallet</div>
             <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              You do not currently hold tokens in the OpenWorld contract on Botchain Testnet.
+              You do not currently hold tokens in the OpenWorld contract on {networkName}.
             </p>
             <Link
               href="/create"

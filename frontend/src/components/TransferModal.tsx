@@ -6,6 +6,7 @@ import { isAddress } from 'viem';
 import { X, Send, Loader2, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
 import { OnchainNFT } from '../services/onchain';
 import { NFT_ABI } from '../config/contracts';
+import deployed from '../config/deployedContracts.json';
 
 interface TransferModalProps {
   nft: OnchainNFT | null;
@@ -24,6 +25,11 @@ export default function TransferModal({ nft, isOpen, onClose, onSuccess }: Trans
 
   const { writeContractAsync } = useWriteContract();
 
+  const isMainnet = deployed?.chainId === 677;
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const explorerUrl = deployed?.explorerUrl || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life');
+  const explorerName = isMainnet ? 'BotchainScan' : 'BohrScan';
+
   if (!isOpen || !nft) return null;
 
   const handleTransfer = async () => {
@@ -34,7 +40,7 @@ export default function TransferModal({ nft, isOpen, onClose, onSuccess }: Trans
 
     const cleanRecipient = recipient.trim();
     if (!isAddress(cleanRecipient)) {
-      setErrorMsg('Please enter a valid Botchain wallet address (0x...)');
+      setErrorMsg(`Please enter a valid ${networkName} wallet address (0x...)`);
       return;
     }
 
@@ -99,7 +105,7 @@ export default function TransferModal({ nft, isOpen, onClose, onSuccess }: Trans
                 <span>Transfer NFT</span>
               </h2>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                Direct on-chain safe transfer on Botchain Testnet.
+                Direct on-chain safe transfer on {networkName}.
               </p>
             </div>
 
@@ -123,7 +129,7 @@ export default function TransferModal({ nft, isOpen, onClose, onSuccess }: Trans
                 className="w-full px-3.5 py-2.5 bg-[#090a0f] border border-[#232738] rounded-xl text-white font-mono text-xs focus:outline-none focus:border-indigo-500"
               />
               <span className="text-[10px] text-slate-400 block">
-                Make sure the recipient is an EVM address on Botchain Testnet.
+                Make sure the recipient is an EVM address on {networkName}.
               </span>
             </div>
 
@@ -160,12 +166,12 @@ export default function TransferModal({ nft, isOpen, onClose, onSuccess }: Trans
             </div>
             {txHash && (
               <a
-                href={`https://scan.bohr.life/tx/${txHash}`}
+                href={`${explorerUrl}/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:underline"
               >
-                <span>View on BohrScan</span>
+                <span>View on {explorerName}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}

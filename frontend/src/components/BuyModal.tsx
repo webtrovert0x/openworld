@@ -7,7 +7,7 @@ import { parseEther } from 'viem';
 import { X, ShoppingBag, Loader2, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
 import { OnchainNFT } from '../services/onchain';
 import { MARKETPLACE_ADDRESS, MARKETPLACE_ABI } from '../config/contracts';
-import { botchainTestnet } from '../config/chains';
+import deployed from '../config/deployedContracts.json';
 
 interface BuyModalProps {
   nft: OnchainNFT | null;
@@ -21,7 +21,7 @@ export default function BuyModal({ nft, isOpen, onClose, onSuccess }: BuyModalPr
   const { address, isConnected } = useAccount();
   const { data: balanceData } = useBalance({
     address: address,
-    chainId: botchainTestnet.id,
+    chainId: deployed?.chainId,
   });
 
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,6 +30,11 @@ export default function BuyModal({ nft, isOpen, onClose, onSuccess }: BuyModalPr
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const { writeContractAsync } = useWriteContract();
+
+  const isMainnet = deployed?.chainId === 677;
+  const explorerUrl = deployed?.explorerUrl || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life');
+  const explorerName = isMainnet ? 'BotchainScan' : 'BohrScan';
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
 
   if (!isOpen || !nft) return null;
 
@@ -84,7 +89,7 @@ export default function BuyModal({ nft, isOpen, onClose, onSuccess }: BuyModalPr
                 <span>Buy On-Chain NFT</span>
               </h2>
               <p className="text-xs text-slate-400 font-mono mt-0.5">
-                Botchain Testnet (Chain ID: 968)
+                {networkName} (Chain ID: {isMainnet ? '677' : '968'})
               </p>
             </div>
 
@@ -144,16 +149,16 @@ export default function BuyModal({ nft, isOpen, onClose, onSuccess }: BuyModalPr
             <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
             <div>
               <h3 className="text-base font-bold text-white">Purchase Confirmed</h3>
-              <p className="text-xs text-slate-400 mt-1">Transaction confirmed on Botchain Testnet.</p>
+              <p className="text-xs text-slate-400 mt-1">Transaction confirmed on {networkName}.</p>
             </div>
             {txHash && (
               <a
-                href={`https://scan.bohr.life/tx/${txHash}`}
+                href={`${explorerUrl}/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:underline"
               >
-                <span>View on BohrScan</span>
+                <span>View on {explorerName}</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}

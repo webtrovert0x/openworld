@@ -7,7 +7,8 @@ import { parseEther } from 'viem';
 import { X, Sparkles, Loader2, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
 import { OnchainNFT } from '../services/onchain';
 import { MARKETPLACE_ADDRESS, MARKETPLACE_ABI } from '../config/contracts';
-import { botchainTestnet } from '../config/chains';
+import { botchainMainnet, botchainTestnet } from '../config/chains';
+import deployed from '../config/deployedContracts.json';
 
 interface OfferModalProps {
   nft: OnchainNFT | null;
@@ -19,9 +20,14 @@ interface OfferModalProps {
 export default function OfferModal({ nft, isOpen, onClose, onSuccess }: OfferModalProps) {
   const { open } = useAppKit();
   const { address, isConnected } = useAccount();
+  const isMainnet = deployed?.chainId === 677;
+  const activeChain = isMainnet ? botchainMainnet : botchainTestnet;
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+
   const { data: balanceData } = useBalance({
     address: address,
-    chainId: botchainTestnet.id,
+    chainId: activeChain.id,
   });
 
   const [offerAmount, setOfferAmount] = useState('');
@@ -159,16 +165,16 @@ export default function OfferModal({ nft, isOpen, onClose, onSuccess }: OfferMod
             <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
             <div>
               <h3 className="text-base font-bold text-white">Offer Escrowed</h3>
-              <p className="text-xs text-slate-400 mt-1">Your offer is now live on Botchain Testnet.</p>
+              <p className="text-xs text-slate-400 mt-1">Your offer is now live on {networkName}.</p>
             </div>
             {txHash && (
               <a
-                href={`https://scan.bohr.life/tx/${txHash}`}
+                href={`${explorerUrl}/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:underline"
               >
-                <span>View on BohrScan</span>
+                <span>View on Explorer</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}

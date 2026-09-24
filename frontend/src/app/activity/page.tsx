@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { publicClient } from '../../services/onchain';
 import { MARKETPLACE_ADDRESS, MARKETPLACE_ABI, GENESIS_NFT_ADDRESS, NFT_ABI } from '../../config/contracts';
+import deployed from '../../config/deployedContracts.json';
 
 interface ActivityItem {
   id: string;
@@ -124,7 +125,7 @@ export default function ActivityPage() {
             On-Chain Activity
           </h1>
           <p className="text-xs font-mono text-slate-400">
-            Real-time event ledger from Botchain Testnet contract <strong className="text-slate-300">{MARKETPLACE_ADDRESS}</strong>.
+            Real-time event ledger from {deployed?.chainId === 677 ? 'Botchain Mainnet' : 'Botchain Testnet'} contract <strong className="text-slate-300">{MARKETPLACE_ADDRESS}</strong>.
           </p>
         </div>
 
@@ -143,35 +144,43 @@ export default function ActivityPage() {
         {isLoading ? (
           <div className="p-16 text-center space-y-2">
             <RefreshCw className="w-6 h-6 text-indigo-500 animate-spin mx-auto" />
-            <div className="text-xs text-slate-400">Querying on-chain contract events...</div>
+            <div className="text-sm font-bold text-white">Indexing Blockchain Event Logs...</div>
+            <p className="text-slate-400 text-xs">Querying recent blocks for sales, listings, and mints</p>
           </div>
         ) : events.length > 0 ? (
-          <table className="w-full text-left">
-            <thead className="bg-[#141724] text-slate-400 border-b border-[#232738]">
-              <tr>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-[#232738] bg-[#0c0d14] text-[11px] uppercase tracking-wider text-slate-400">
                 <th className="p-3.5">Event</th>
-                <th className="p-3.5">Token ID</th>
+                <th className="p-3.5">Item</th>
                 <th className="p-3.5">Value</th>
-                <th className="p-3.5">From</th>
+                <th className="p-3.5">Signer</th>
                 <th className="p-3.5">Block</th>
                 <th className="p-3.5 text-right">Transaction</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#232738]">
+            <tbody className="divide-y divide-[#1e2235]">
               {events.map((ev) => (
-                <tr key={ev.id} className="hover:bg-[#141724]/60 transition-colors">
+                <tr key={ev.id} className="hover:bg-[#151824] transition-colors">
                   <td className="p-3.5">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      ev.type === 'Sale' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' :
-                      ev.type === 'List' ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30' :
-                      ev.type === 'Offer' ? 'bg-purple-500/10 text-purple-400 border border-purple-500/30' :
-                      'bg-slate-500/10 text-slate-300 border border-slate-500/30'
+                    <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-bold ${
+                      ev.type === 'Sale' 
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' 
+                        : ev.type === 'List'
+                        ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/30'
+                        : 'bg-purple-500/10 text-purple-400 border border-purple-500/30'
                     }`}>
+                      {ev.type === 'Sale' && <ShoppingBag className="w-3 h-3" />}
+                      {ev.type === 'List' && <Tag className="w-3 h-3" />}
+                      {ev.type === 'Mint' && <Sparkles className="w-3 h-3" />}
                       {ev.type}
                     </span>
                   </td>
-                  <td className="p-3.5 font-bold text-white">
-                    <Link href={`/nft/${ev.contractAddress}/${ev.tokenId}`} className="hover:text-indigo-400">
+                  <td className="p-3.5">
+                    <Link
+                      href={`/nft/${ev.contractAddress}/${ev.tokenId}`}
+                      className="text-white hover:text-indigo-400 font-bold"
+                    >
                       Token #{ev.tokenId}
                     </Link>
                   </td>
@@ -186,7 +195,7 @@ export default function ActivityPage() {
                   </td>
                   <td className="p-3.5 text-right">
                     <a
-                      href={`https://scan.bohr.life/tx/${ev.txHash}`}
+                      href={`${deployed?.chainId === 677 ? 'https://scan.botchain.ai' : 'https://scan.bohr.life'}/tx/${ev.txHash}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 text-cyan-400 hover:underline"

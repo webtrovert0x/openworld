@@ -18,6 +18,7 @@ import {
   Globe
 } from 'lucide-react';
 import { GENESIS_NFT_ADDRESS, NFT_ABI } from '../../config/contracts';
+import deployed from '../../config/deployedContracts.json';
 
 interface TraitInput {
   trait_type: string;
@@ -150,7 +151,7 @@ export default function CreateNFTPage() {
           Mint On-Chain NFT
         </h1>
         <p className="text-xs font-mono text-slate-400">
-          Deploy an ERC-721 token directly to Botchain Testnet contract <strong className="text-slate-300">{GENESIS_NFT_ADDRESS}</strong>.
+          Deploy an ERC-721 token directly to {deployed?.chainId === 677 ? 'Botchain Mainnet' : 'Botchain Testnet'} contract <strong className="text-slate-300">{GENESIS_NFT_ADDRESS}</strong>.
         </p>
       </div>
 
@@ -413,19 +414,19 @@ export default function CreateNFTPage() {
           <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
           <h2 className="text-lg font-bold text-white">Mint Confirmed</h2>
           <p className="text-xs text-slate-400">
-            Successfully minted <strong className="text-white">{mintedCount} {mintedCount > 1 ? 'copies' : 'copy'} of {name}</strong> on Botchain Testnet.
+            Successfully minted <strong className="text-white">{mintedCount} {mintedCount > 1 ? 'copies' : 'copy'} of {name}</strong> on {deployed?.chainId === 677 ? 'Botchain Mainnet' : 'Botchain Testnet'}.
           </p>
 
           {txHash && (
             <div className="p-3 bg-[#090a0f] border border-[#232738] rounded-xl text-xs flex justify-between items-center">
               <span className="text-slate-400 truncate max-w-[240px]">TX: {txHash}</span>
               <a
-                href={`https://scan.bohr.life/tx/${txHash}`}
+                href={`${deployed?.explorerUrl || 'https://scan.botchain.ai'}/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-cyan-400 hover:underline flex items-center gap-1 shrink-0"
               >
-                <span>BohrScan</span>
+                <span>{deployed?.chainId === 677 ? 'BotchainScan' : 'BohrScan'}</span>
                 <ExternalLink className="w-3 h-3" />
               </a>
             </div>

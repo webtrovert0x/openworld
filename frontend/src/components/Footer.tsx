@@ -4,8 +4,16 @@ import React from 'react';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import { MARKETPLACE_ADDRESS, GENESIS_NFT_ADDRESS } from '../config/contracts';
+import deployed from '../config/deployedContracts.json';
 
 export default function Footer() {
+  const isMainnet = deployed?.chainId === 677;
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const chainId = deployed?.chainId || (isMainnet ? 677 : 968);
+  const explorerUrl = deployed?.explorerUrl || (isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life');
+  const explorerName = isMainnet ? 'BotchainScan Explorer' : 'BohrScan Explorer';
+  const rpcUrl = deployed?.rpcUrl || (isMainnet ? 'https://rpc.botchain.ai' : 'https://rpc.bohr.life');
+
   return (
     <footer className="w-full bg-[#06070a] border-t border-[#232738] py-10 font-mono text-xs text-slate-400">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -24,7 +32,7 @@ export default function Footer() {
               </span>
             </div>
             <p className="text-[11px] text-slate-400 leading-relaxed">
-              Decentralized NFT trading engine on Botchain Testnet (Chain 968).
+              Decentralized NFT trading engine on {networkName} (Chain {chainId}).
             </p>
           </div>
 
@@ -41,21 +49,21 @@ export default function Footer() {
 
           {/* Network */}
           <div className="space-y-2">
-            <h4 className="text-[11px] font-bold uppercase text-slate-300">Botchain Testnet</h4>
+            <h4 className="text-[11px] font-bold uppercase text-slate-300">{networkName}</h4>
             <ul className="space-y-1.5 text-[11px]">
               <li>
-                <a href="https://scan.bohr.life" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1">
-                  <span>BohrScan Explorer</span>
+                <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1">
+                  <span>{explorerName}</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
               <li>
-                <a href="https://rpc.bohr.life" target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1">
+                <a href={rpcUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1">
                   <span>RPC Endpoint</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
-              <li><span className="text-slate-400">Chain ID: 968</span></li>
+              <li><span className="text-slate-400">Chain ID: {chainId}</span></li>
               <li><span className="text-slate-400">Settlement Token: BOT</span></li>
             </ul>
           </div>
@@ -66,13 +74,13 @@ export default function Footer() {
             <div className="space-y-1.5 text-[11px]">
               <div>
                 <span className="text-slate-400 block text-[10px]">Marketplace</span>
-                <a href={`https://scan.bohr.life/address/${MARKETPLACE_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
+                <a href={`${explorerUrl}/address/${MARKETPLACE_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
                   {MARKETPLACE_ADDRESS.slice(0, 10)}...{MARKETPLACE_ADDRESS.slice(-4)}
                 </a>
               </div>
               <div>
                 <span className="text-slate-400 block text-[10px]">Genesis Collection</span>
-                <a href={`https://scan.bohr.life/address/${GENESIS_NFT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
+                <a href={`${explorerUrl}/address/${GENESIS_NFT_ADDRESS}`} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline">
                   {GENESIS_NFT_ADDRESS.slice(0, 10)}...{GENESIS_NFT_ADDRESS.slice(-4)}
                 </a>
               </div>
@@ -82,10 +90,11 @@ export default function Footer() {
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
-          <div>© {new Date().getFullYear()} OpenWorld Protocol. Botchain Testnet (968).</div>
+          <div>© {new Date().getFullYear()} OpenWorld Protocol. {networkName} ({chainId}).</div>
           <div className="text-emerald-400 font-semibold">● Botchain Node Connected</div>
         </div>
       </div>
     </footer>
   );
 }
+

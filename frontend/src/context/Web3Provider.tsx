@@ -5,7 +5,7 @@ import { createAppKit } from '@reown/appkit/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { State, WagmiProvider } from 'wagmi';
 import { config, projectId, networks } from '../config/wagmi';
-import { botchainTestnet } from '../config/chains';
+import { botchainMainnet, botchainTestnet } from '../config/chains';
 
 // Setup queryClient
 const queryClient = new QueryClient({
@@ -19,18 +19,18 @@ const queryClient = new QueryClient({
 // AppKit Metadata for OpenWorld
 const metadata = {
   name: 'OpenWorld NFT Marketplace',
-  description: 'Next-Gen NFT Marketplace & Launchpad on Botchain Testnet',
-  url: 'https://openworld.market',
-  icons: ['https://openworld.market/logo.png'],
+  description: 'Next-Gen NFT Marketplace & Launchpad on Botchain Mainnet',
+  url: 'https://openworld-psi.vercel.app',
+  icons: ['https://openworld-psi.vercel.app/logo.png'],
 };
 
 // Create AppKit instance
 createAppKit({
   adapters: [config as any],
-  networks: [botchainTestnet as any],
+  networks: [botchainMainnet, botchainTestnet] as any,
   projectId,
   metadata,
-  defaultNetwork: botchainTestnet as any,
+  defaultNetwork: botchainMainnet as any,
   features: {
     analytics: true,
     email: false,

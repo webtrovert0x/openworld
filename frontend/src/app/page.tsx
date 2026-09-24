@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useOnchainMarket } from '../hooks/useOnchainMarket';
 import { OnchainNFT } from '../services/onchain';
+import deployed from '../config/deployedContracts.json';
 import { GENESIS_NFT_ADDRESS, MARKETPLACE_ADDRESS } from '../config/contracts';
 import NFTCard from '../components/NFTCard';
 import BuyModal from '../components/BuyModal';
@@ -76,17 +77,17 @@ export default function MarketplacePage() {
             <span className="text-slate-400 block text-[10px] uppercase">Network</span>
             <span className="text-emerald-400 font-bold flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              Botchain Testnet (968)
+              {deployed?.chainId === 677 ? 'Botchain Mainnet (677)' : 'Botchain Testnet (968)'}
             </span>
           </div>
           <div className="border-l border-[#232738] pl-4">
             <span className="text-slate-400 block text-[10px] uppercase">RPC Endpoint</span>
-            <span className="text-slate-200">https://rpc.bohr.life</span>
+            <span className="text-slate-200">{deployed?.rpcUrl || 'https://rpc.botchain.ai'}</span>
           </div>
           <div className="border-l border-[#232738] pl-4">
             <span className="text-slate-400 block text-[10px] uppercase">Marketplace Engine</span>
             <a
-              href={`https://scan.bohr.life/address/${MARKETPLACE_ADDRESS}`}
+              href={`${deployed?.chainId === 677 ? 'https://scan.botchain.ai' : 'https://scan.bohr.life'}/address/${MARKETPLACE_ADDRESS}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-indigo-400 hover:underline flex items-center gap-1"
@@ -115,11 +116,11 @@ export default function MarketplacePage() {
               {collectionInfo.name} ({collectionInfo.symbol})
             </h1>
             <a
-              href={`https://scan.bohr.life/address/${contractAddress}`}
+              href={`${deployed?.chainId === 677 ? 'https://scan.botchain.ai' : 'https://scan.bohr.life'}/address/${contractAddress}`}
               target="_blank"
               rel="noopener noreferrer"
               className="text-slate-400 hover:text-white"
-              title="View on BohrScan"
+              title={`View on ${deployed?.chainId === 677 ? 'BotchainScan' : 'BohrScan'}`}
             >
               <ExternalLink className="w-4 h-4" />
             </a>
@@ -236,8 +237,8 @@ export default function MarketplacePage() {
       {isLoading ? (
         <div className="panel rounded-xl p-16 text-center space-y-3 font-mono">
           <RefreshCw className="w-8 h-8 text-indigo-500 animate-spin mx-auto" />
-          <div className="text-sm font-bold text-white">Reading on-chain tokens from Botchain Testnet...</div>
-          <div className="text-xs text-slate-400">Querying RPC https://rpc.bohr.life</div>
+          <div className="text-sm font-bold text-white">Reading on-chain tokens from {deployed?.chainId === 677 ? 'Botchain Mainnet' : 'Botchain Testnet'}...</div>
+          <div className="text-xs text-slate-400">Querying RPC {deployed?.rpcUrl || 'https://rpc.botchain.ai'}</div>
         </div>
       ) : filteredItems.length > 0 ? (
         viewMode === 'grid' ? (
@@ -317,7 +318,7 @@ export default function MarketplacePage() {
       ) : (
         <div className="panel rounded-xl p-16 text-center space-y-3 font-mono">
           <Layers className="w-10 h-10 text-slate-600 mx-auto" />
-          <h3 className="text-base font-bold text-white">No Tokens Found on Botchain Testnet</h3>
+          <h3 className="text-base font-bold text-white">No Tokens Found on {deployed?.chainId === 677 ? 'Botchain Mainnet' : 'Botchain Testnet'}</h3>
           <p className="text-xs text-slate-400 max-w-md mx-auto">
             No tokens are currently minted in this contract. Use the Mint Studio to deploy the next on-chain token.
           </p>

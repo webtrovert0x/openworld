@@ -7,6 +7,7 @@ import { parseEther } from 'viem';
 import { X, Tag, Loader2, CheckCircle2, AlertCircle, ExternalLink } from 'lucide-react';
 import { OnchainNFT } from '../services/onchain';
 import { MARKETPLACE_ADDRESS, MARKETPLACE_ABI, NFT_ABI } from '../config/contracts';
+import deployed from '../config/deployedContracts.json';
 
 interface ListModalProps {
   nft: OnchainNFT | null;
@@ -16,6 +17,10 @@ interface ListModalProps {
 }
 
 export default function ListModal({ nft, isOpen, onClose, onSuccess }: ListModalProps) {
+  const isMainnet = deployed?.chainId === 677;
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+
   const { open } = useAppKit();
   const { isConnected } = useAccount();
 
@@ -151,16 +156,16 @@ export default function ListModal({ nft, isOpen, onClose, onSuccess }: ListModal
             <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
             <div>
               <h3 className="text-base font-bold text-white">Item Listed</h3>
-              <p className="text-xs text-slate-400 mt-1">Item is now tradable on Botchain Testnet.</p>
+              <p className="text-xs text-slate-400 mt-1">Item is now tradable on {networkName}.</p>
             </div>
             {txHash && (
               <a
-                href={`https://scan.bohr.life/tx/${txHash}`}
+                href={`${explorerUrl}/tx/${txHash}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1 text-xs text-cyan-400 hover:underline"
               >
-                <span>View on BohrScan</span>
+                <span>View on Explorer</span>
                 <ExternalLink className="w-3.5 h-3.5" />
               </a>
             )}

@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { publicClient, OnchainNFT } from '../../../../services/onchain';
 import { GENESIS_NFT_ADDRESS, MARKETPLACE_ADDRESS, NFT_ABI, MARKETPLACE_ABI } from '../../../../config/contracts';
+import deployed from '../../../../config/deployedContracts.json';
 import BuyModal from '../../../../components/BuyModal';
 import OfferModal from '../../../../components/OfferModal';
 import ListModal from '../../../../components/ListModal';
@@ -34,6 +35,11 @@ interface ExtendedNFT extends OnchainNFT {
 }
 
 export default function NFTDetailPage() {
+  const isMainnet = deployed?.chainId === 677;
+  const networkName = isMainnet ? 'Botchain Mainnet' : 'Botchain Testnet';
+  const networkDisplay = isMainnet ? 'Botchain Mainnet (677)' : 'Botchain Testnet (968)';
+  const explorerUrl = isMainnet ? 'https://scan.botchain.ai' : 'https://scan.bohr.life';
+
   const params = useParams();
   const contractAddress = (params?.contract as string) || GENESIS_NFT_ADDRESS;
   const tokenId = parseInt((params?.tokenId as string) || '1', 10);
@@ -138,11 +144,11 @@ export default function NFTDetailPage() {
       });
     } catch (err: any) {
       console.error('Failed to load token:', err);
-      setError(err?.message || 'Failed to query token from Botchain Testnet');
+      setError(err?.message || `Failed to query token from ${networkName}`);
     } finally {
       setIsLoading(false);
     }
-  }, [contractAddress, tokenId]);
+  }, [contractAddress, tokenId, networkName]);
 
   useEffect(() => {
     loadTokenData();
@@ -163,7 +169,7 @@ export default function NFTDetailPage() {
 
   const handleShareToX = () => {
     if (typeof window !== 'undefined' && nft) {
-      const tweetText = `Check out ${nft.name} on @OpenWorld NFT Marketplace (Botchain Testnet)!`;
+      const tweetText = `Check out ${nft.name} on @OpenWorld NFT Marketplace (${networkName})!`;
       const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}&url=${encodeURIComponent(window.location.href)}`;
       window.open(url, '_blank');
     }
@@ -223,7 +229,7 @@ export default function NFTDetailPage() {
         <div className="panel rounded-xl p-16 text-center space-y-3 font-mono">
           <AlertCircle className="w-10 h-10 text-rose-500 mx-auto" />
           <h2 className="text-base font-bold text-white">Token Not Found</h2>
-          <p className="text-xs text-slate-400">{error || 'Token does not exist on Botchain Testnet.'}</p>
+          <p className="text-xs text-slate-400">{error || `Token does not exist on ${networkName}.`}</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -252,7 +258,7 @@ export default function NFTDetailPage() {
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Contract Address</span>
                 <a
-                  href={`https://scan.bohr.life/address/${nft.contractAddress}`}
+                  href={`${explorerUrl}/address/${nft.contractAddress}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-indigo-400 hover:underline flex items-center gap-1"
@@ -267,7 +273,7 @@ export default function NFTDetailPage() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-400">Network</span>
-                <span className="text-emerald-400">Botchain Testnet (968)</span>
+                <span className="text-emerald-400">{networkDisplay}</span>
               </div>
               {nft.externalUrl && (
                 <div className="flex justify-between items-center pt-1 border-t border-[#232738]">
@@ -308,7 +314,7 @@ export default function NFTDetailPage() {
               <div>
                 <span className="text-[10px] uppercase font-bold text-slate-400 block">Current Owner</span>
                 <a
-                  href={`https://scan.bohr.life/address/${nft.owner}`}
+                  href={`${explorerUrl}/address/${nft.owner}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-white hover:text-indigo-400 flex items-center gap-1 mt-1 truncate"
