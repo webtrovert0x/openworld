@@ -16,12 +16,14 @@ import {
 } from 'lucide-react';
 import deployed from '../config/deployedContracts.json';
 import { botchainMainnet, botchainTestnet } from '../config/chains';
+import ConnectModal from './ConnectModal';
 
 export default function Navbar() {
   const pathname = usePathname();
   const { open } = useAppKit();
   const { address, isConnected, chainId } = useAccount();
   const { disconnect } = useDisconnect();
+  const [connectModalOpen, setConnectModalOpen] = React.useState(false);
 
   const activeChainId = chainId || deployed?.chainId || botchainMainnet.id;
   const isMainnet = activeChainId === 677;
@@ -104,8 +106,8 @@ export default function Navbar() {
 
           {!isConnected ? (
             <button
-              onClick={() => open()}
-              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-mono font-semibold text-xs text-white bg-indigo-600 hover:bg-indigo-500 transition-colors"
+              onClick={() => setConnectModalOpen(true)}
+              className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-mono font-semibold text-xs text-white bg-indigo-600 hover:bg-indigo-500 transition-colors cursor-pointer"
             >
               <Wallet className="w-3.5 h-3.5" />
               <span>Connect</span>
@@ -117,13 +119,13 @@ export default function Navbar() {
               </div>
               <button
                 onClick={() => open()}
-                className="px-2.5 py-1 bg-[#181b28] hover:bg-[#202436] rounded-md text-xs font-mono text-indigo-300 font-semibold transition-colors flex items-center gap-1.5"
+                className="px-2.5 py-1 bg-[#181b28] hover:bg-[#202436] rounded-md text-xs font-mono text-indigo-300 font-semibold transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <span>{address ? `${address.slice(0, 6)}...${address.slice(-4)}` : ''}</span>
               </button>
               <button
                 onClick={() => disconnect()}
-                className="p-1 text-slate-400 hover:text-rose-400 transition-colors"
+                className="p-1 text-slate-400 hover:text-rose-400 transition-colors cursor-pointer"
                 title="Disconnect"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -132,6 +134,12 @@ export default function Navbar() {
           )}
         </div>
       </div>
+
+      {/* Connect Modal */}
+      <ConnectModal
+        isOpen={connectModalOpen}
+        onClose={() => setConnectModalOpen(false)}
+      />
     </header>
   );
 }
