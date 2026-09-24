@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useAccount, useWriteContract } from 'wagmi';
+import { useAccount, useWriteContract, useBalance, useReadContract } from 'wagmi';
 import { useAppKit } from '@reown/appkit/react';
+import { parseEther, formatEther } from 'viem';
 import { 
   Plus, 
   Trash2, 
@@ -15,9 +16,11 @@ import {
   Image as ImageIcon,
   ArrowRight,
   Lock,
-  Globe
+  Globe,
+  Coins
 } from 'lucide-react';
 import { GENESIS_NFT_ADDRESS, NFT_ABI } from '../../config/contracts';
+import { botchainMainnet } from '../../config/chains';
 import deployed from '../../config/deployedContracts.json';
 
 interface TraitInput {
@@ -28,6 +31,17 @@ interface TraitInput {
 export default function CreateNFTPage() {
   const { address, isConnected } = useAccount();
   const { open } = useAppKit();
+
+  const { data: balanceData } = useBalance({
+    address: address,
+    chainId: botchainMainnet.id,
+  });
+
+  const { data: mintPriceData } = useReadContract({
+    address: GENESIS_NFT_ADDRESS,
+    abi: NFT_ABI,
+    functionName: 'mintPrice',
+  });
 
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -49,6 +63,12 @@ export default function CreateNFTPage() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   const { writeContractAsync } = useWriteContract();
+
+  const unitMintPrice: bigint = typeof mintPriceData === 'bigint' ? mintPriceData : parseEther('0.1');
+  const mintSupply = Math.max(1, Number(supply) || 1);
+  const totalCostWei = unitMintPrice * BigInt(mintSupply);
+  const userBalanceWei = balanceData?.value || BigInt(0);
+  const hasEnoughBalance = !isConnected || userBalanceWei >= totalCostWei;
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -120,6 +140,7 @@ export default function CreateNFTPage() {
           abi: NFT_ABI,
           functionName: 'mint',
           args: [metadataUri, BigInt(royaltyBps)],
+          value: totalCostWei,
         });
       } else {
         const uris = Array(mintSupply).fill(metadataUri);
@@ -128,6 +149,7 @@ export default function CreateNFTPage() {
           abi: NFT_ABI,
           functionName: 'batchMint',
           args: [uris, BigInt(royaltyBps)],
+          value: totalCostWei,
         });
       }
 
@@ -370,6 +392,35 @@ export default function CreateNFTPage() {
                 </div>
               </div>
 
+              {/* Mint Cost Breakdown */}
+              <div className="p-3 bg-[#090a0f] border border-[#232738] rounded-xl font-mono text-xs space-y-1.5">
+                <div className="flex justify-between text-slate-400">
+                  <span>Mint Price per Copy</span>
+                  <span className="text-white">{formatEther(unitMintPrice)} BOT</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Total Mint Cost ({mintSupply} {mintSupply > 1 ? 'copies' : 'copy'})</span>
+                  <span className="text-indigo-400 font-bold">{formatEther(totalCostWei)} BOT</span>
+                </div>
+                {isConnected && balanceData && (
+                  <div className="flex justify-between text-slate-400 pt-1 border-t border-[#1e2235]">
+                    <span>Wallet Balance</span>
+                    <span className={hasEnoughBalance ? 'text-emerald-400' : 'text-rose-400 font-bold'}>
+                      {parseFloat(balanceData.formatted).toFixed(3)} BOT
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {!hasEnoughBalance && isConnected && (
+                <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-mono flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>
+                    Insufficient BOT for {mintSupply} {mintSupply > 1 ? 'copies' : 'copy'} ({formatEther(totalCostWei)} BOT required, {balanceData ? parseFloat(balanceData.formatted).toFixed(3) : '0'} BOT available). Please reduce quantity to 1.
+                  </span>
+                </div>
+              )}
+
               {errorMsg && (
                 <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-mono flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -383,15 +434,15 @@ export default function CreateNFTPage() {
                   <button
                     type="button"
                     onClick={() => open()}
-                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-mono font-bold text-xs transition-colors"
+                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-mono font-bold text-xs transition-colors cursor-pointer"
                   >
                     Connect Wallet to Mint
                   </button>
                 ) : (
                   <button
                     type="submit"
-                    disabled={isMinting}
-                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-mono font-bold text-xs transition-colors flex items-center justify-center gap-2"
+                    disabled={isMinting || !hasEnoughBalance}
+                    className="w-full py-3 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl font-mono font-bold text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
                   >
                     {isMinting ? (
                       <>
@@ -399,7 +450,7 @@ export default function CreateNFTPage() {
                         <span>Broadcasting {supply > 1 ? `${supply} Tokens` : 'Token'} to Botchain...</span>
                       </>
                     ) : (
-                      <span>Mint {supply > 1 ? `${supply} Copies` : 'Token'} on Botchain</span>
+                      <span>Mint {supply > 1 ? `${supply} Copies` : 'Token'} ({formatEther(totalCostWei)} BOT)</span>
                     )}
                   </button>
                 )}

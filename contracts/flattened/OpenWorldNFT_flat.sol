@@ -1,4 +1,3 @@
-◇ injected env (1) from .env // tip: ⌘ suppress logs { quiet: true }
 // Sources flattened with hardhat v2.29.1 https://hardhat.org
 
 // SPDX-License-Identifier: MIT
