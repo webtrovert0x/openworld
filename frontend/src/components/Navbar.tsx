@@ -16,14 +16,12 @@ import {
 } from 'lucide-react';
 import deployed from '../config/deployedContracts.json';
 import { botchainMainnet, botchainTestnet } from '../config/chains';
-import ConnectModal from './ConnectModal';
 
 export default function Navbar() {
   const pathname = usePathname();
   const { open } = useAppKit();
   const { address, isConnected, chainId } = useAccount();
   const { disconnect } = useDisconnect();
-  const [connectModalOpen, setConnectModalOpen] = React.useState(false);
 
   const activeChainId = chainId || deployed?.chainId || botchainMainnet.id;
   const isMainnet = activeChainId === 677;
@@ -106,7 +104,7 @@ export default function Navbar() {
 
           {!isConnected ? (
             <button
-              onClick={() => setConnectModalOpen(true)}
+              onClick={() => open()}
               className="flex items-center gap-2 px-3.5 py-1.5 rounded-lg font-mono font-semibold text-xs text-white bg-indigo-600 hover:bg-indigo-500 transition-colors cursor-pointer"
             >
               <Wallet className="w-3.5 h-3.5" />
@@ -134,12 +132,6 @@ export default function Navbar() {
           )}
         </div>
       </div>
-
-      {/* Connect Modal */}
-      <ConnectModal
-        isOpen={connectModalOpen}
-        onClose={() => setConnectModalOpen(false)}
-      />
     </header>
   );
 }
