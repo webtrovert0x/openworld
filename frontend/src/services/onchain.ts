@@ -31,7 +31,7 @@ export const publicClient = createPublicClient({
 function resolveIpfsUrl(url: string): string {
   if (!url) return '';
   if (url.startsWith('ipfs://')) {
-    return url.replace('ipfs://', 'https://ipfs.io/ipfs/');
+    return url.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
   }
   return url;
 }
@@ -64,7 +64,14 @@ export async function fetchOnchainCollection(contractAddress: string = GENESIS_N
         address: targetAddr,
         abi: NFT_ABI,
         functionName: 'totalSupply',
-      }).catch(() => BigInt(0)),
+      }).catch(async () => {
+        const nextId = await publicClient.readContract({
+          address: targetAddr,
+          abi: NFT_ABI,
+          functionName: 'nextTokenId',
+        }).catch(() => BigInt(1));
+        return (nextId as bigint) - BigInt(1);
+      }),
     ]);
 
     const totalSupply = Number(totalSupplyBig);

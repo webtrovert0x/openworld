@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { useAccount } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { 
   RefreshCw, 
   Search, 
@@ -18,7 +18,7 @@ import {
 import { useOnchainMarket } from '../hooks/useOnchainMarket';
 import { OnchainNFT } from '../services/onchain';
 import deployed from '../config/deployedContracts.json';
-import { GENESIS_NFT_ADDRESS, MARKETPLACE_ADDRESS } from '../config/contracts';
+import { GENESIS_NFT_ADDRESS, MARKETPLACE_ADDRESS, DROP_FACTORY_ADDRESS, DROP_FACTORY_ABI } from '../config/contracts';
 import NFTCard from '../components/NFTCard';
 import BuyModal from '../components/BuyModal';
 import OfferModal from '../components/OfferModal';
@@ -26,6 +26,19 @@ import OfferModal from '../components/OfferModal';
 export default function MarketplacePage() {
   const [contractAddress, setContractAddress] = useState<string>(GENESIS_NFT_ADDRESS);
   const [customAddressInput, setCustomAddressInput] = useState<string>('');
+  
+  const { data: allDrops } = useReadContract({
+    address: DROP_FACTORY_ADDRESS,
+    abi: DROP_FACTORY_ABI,
+    functionName: 'getAllDrops',
+  });
+
+  React.useEffect(() => {
+    if (allDrops && (allDrops as string[]).length > 0) {
+      const dropsArray = allDrops as string[];
+      setContractAddress(dropsArray[dropsArray.length - 1]);
+    }
+  }, [allDrops]);
   const { collectionInfo, items, isLoading, error, refresh } = useOnchainMarket(contractAddress);
 
   const [searchQuery, setSearchQuery] = useState('');

@@ -2,6 +2,12 @@ import deployed from './deployedContracts.json';
 
 export const MARKETPLACE_ADDRESS = (deployed?.marketplaceAddress || '0x526676Bed606B8942dd1Eb18b7E6090E14C5a30A') as `0x${string}`;
 export const GENESIS_NFT_ADDRESS = (deployed?.nftAddress || '0x50Eda285Fdc45AE741eF4F23110E9BE4a3CFec61') as `0x${string}`;
+export const DROP_FACTORY_ADDRESS = '0x2Be2B7d615a9DF3974b2837ffE97EBC21028576c' as `0x${string}`;
+
+export const DROP_FACTORY_ABI = [
+  { "inputs": [], "name": "getAllDrops", "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }], "stateMutability": "view", "type": "function" },
+  { "inputs": [{ "internalType": "address", "name": "_creator", "type": "address" }], "name": "getDropsByCreator", "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }], "stateMutability": "view", "type": "function" }
+] as const;
 
 export const MARKETPLACE_ABI = [
   {
@@ -222,6 +228,13 @@ export const NFT_ABI = [
   {
     "inputs": [],
     "name": "totalSupply",
+    "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "nextTokenId",
     "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
     "stateMutability": "view",
     "type": "function"
