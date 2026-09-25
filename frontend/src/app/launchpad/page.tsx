@@ -16,6 +16,7 @@ import { botchainMainnet } from '../../config/chains';
 
 const DROP_FACTORY_ADDRESS = "0x2Be2B7d615a9DF3974b2837ffE97EBC21028576c";
 const DROP_FACTORY_ABI = [
+  { "inputs": [], "name": "getAllDrops", "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }], "stateMutability": "view", "type": "function" },
   { "inputs": [{ "internalType": "address", "name": "_creator", "type": "address" }], "name": "getDropsByCreator", "outputs": [{ "internalType": "address[]", "name": "", "type": "address[]" }], "stateMutability": "view", "type": "function" }
 ];
 
@@ -93,11 +94,7 @@ export default function LaunchpadPage() {
   const { data: drops, isLoading } = useReadContract({
     address: DROP_FACTORY_ADDRESS,
     abi: DROP_FACTORY_ABI,
-    functionName: 'getDropsByCreator',
-    args: address ? [address] : undefined,
-    query: {
-      enabled: isConnected && !!address,
-    }
+    functionName: 'getAllDrops',
   });
 
   const dropAddresses = drops as `0x${string}`[] || [];
@@ -110,10 +107,10 @@ export default function LaunchpadPage() {
         <div className="space-y-2">
           <h1 className="text-3xl font-black font-mono text-white flex items-center gap-2">
             <Layers className="w-7 h-7 text-indigo-400" />
-            My Launchpad
+            Active Drops
           </h1>
           <p className="text-sm font-mono text-slate-400 max-w-xl">
-            Manage your deployed Smart Contracts. Every collection here is a sovereign, self-contained contract that you own.
+            Explore live NFT drops deployed on the OpenWorld Protocol. Each collection is a sovereign, self-contained contract on Botchain.
           </p>
         </div>
 
@@ -126,23 +123,7 @@ export default function LaunchpadPage() {
         </Link>
       </div>
 
-      {!isConnected ? (
-        <div className="panel rounded-2xl p-16 text-center space-y-4">
-          <div className="w-16 h-16 bg-[#181b28] rounded-full flex items-center justify-center mx-auto mb-2">
-            <Sparkles className="w-8 h-8 text-indigo-400" />
-          </div>
-          <h2 className="text-xl font-bold text-white">Connect Your Wallet</h2>
-          <p className="text-sm text-slate-400 max-w-sm mx-auto pb-2">
-            Connect to Botchain Mainnet to view the drops you have deployed from this address.
-          </p>
-          <button
-            onClick={() => open()}
-            className="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold transition-all shadow-lg"
-          >
-            Connect Wallet
-          </button>
-        </div>
-      ) : isLoading ? (
+      {isLoading ? (
         <div className="panel rounded-2xl p-24 flex items-center justify-center">
           <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
         </div>
@@ -155,9 +136,9 @@ export default function LaunchpadPage() {
       ) : (
         <div className="panel rounded-2xl p-16 text-center space-y-4 border border-dashed border-[#2d3247] bg-transparent">
           <Layers className="w-12 h-12 text-slate-600 mx-auto mb-2" />
-          <h3 className="text-lg font-bold text-white">No Drops Deployed</h3>
+          <h3 className="text-lg font-bold text-white">No Drops Live Yet</h3>
           <p className="text-sm text-slate-400 max-w-sm mx-auto pb-2">
-            You haven't launched any sovereign smart contracts yet. Deploy your first collection today.
+            There are no sovereign smart contracts deployed on the protocol yet. Be the first to launch a collection!
           </p>
           <Link
             href="/create"

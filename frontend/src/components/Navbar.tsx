@@ -34,7 +34,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Marketplace', href: '/', icon: Compass },
     { name: 'Mint Studio', href: '/create', icon: PlusCircle },
-    { name: 'My Drops', href: '/launchpad', icon: Layers },
+    { name: 'Drops', href: '/launchpad', icon: Layers },
     { name: 'Activity', href: '/activity', icon: Activity },
     { name: 'Portfolio', href: '/profile', icon: User },
   ];
