@@ -12,7 +12,8 @@ import {
   User, 
   ExternalLink, 
   Wallet, 
-  LogOut 
+  LogOut,
+  Layers
 } from 'lucide-react';
 import deployed from '../config/deployedContracts.json';
 import { botchainMainnet } from '../config/chains';
@@ -33,6 +34,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Marketplace', href: '/', icon: Compass },
     { name: 'Mint Studio', href: '/create', icon: PlusCircle },
+    { name: 'My Drops', href: '/launchpad', icon: Layers },
     { name: 'Activity', href: '/activity', icon: Activity },
     { name: 'Portfolio', href: '/profile', icon: User },
   ];
