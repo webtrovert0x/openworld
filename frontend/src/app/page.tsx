@@ -12,6 +12,7 @@ import {
   Compass
 } from 'lucide-react';
 import { DROP_FACTORY_ADDRESS, DROP_FACTORY_ABI, GENESIS_NFT_ADDRESS } from '../config/contracts';
+import { useOnchainMarket } from '../hooks/useOnchainMarket';
 
 const DROP_COLLECTION_ABI = [
   { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" },
@@ -24,7 +25,7 @@ function CollectionCard({ address, isGenesis = false }: { address: `0x${string}`
   const { data: name } = useReadContract({ address, abi: DROP_COLLECTION_ABI, functionName: 'name' });
   const { data: symbol } = useReadContract({ address, abi: DROP_COLLECTION_ABI, functionName: 'symbol' });
   const { data: dropURI } = useReadContract({ address, abi: DROP_COLLECTION_ABI, functionName: 'dropURI' });
-  const { data: nextTokenId } = useReadContract({ address, abi: DROP_COLLECTION_ABI, functionName: 'nextTokenId' });
+  const { items } = useOnchainMarket(address);
 
   const [metadata, setMetadata] = useState<any>(null);
 
@@ -39,7 +40,8 @@ function CollectionCard({ address, isGenesis = false }: { address: `0x${string}`
   }, [dropURI]);
 
   const imageUrl = metadata?.image?.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/');
-  const mintedCount = nextTokenId ? Number(nextTokenId) - 1 : (isGenesis ? 'Genesis' : 0);
+  const listedPrices = items.filter(i => i.isListed && i.price > 0).map(i => i.price);
+  const floorPrice = listedPrices.length > 0 ? Math.min(...listedPrices) : 0;
 
   return (
     <Link href={`/collection/${address}`} className="block group">
@@ -65,8 +67,8 @@ function CollectionCard({ address, isGenesis = false }: { address: `0x${string}`
           
           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-[#232738]">
             <div className="space-y-1">
-              <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Total Minted</span>
-              <div className="text-sm font-bold text-slate-200">{mintedCount}</div>
+              <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Floor Price</span>
+              <div className="text-sm font-bold text-slate-200">{floorPrice > 0 ? `${floorPrice} BOT` : '—'}</div>
             </div>
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-bold text-slate-500 font-mono">Status</span>
