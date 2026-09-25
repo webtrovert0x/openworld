@@ -53,13 +53,6 @@ export default function CollectionMarketplacePage() {
   const listedPrices = items.filter(i => i.isListed && i.price > 0).map(i => i.price);
   const floorPrice = listedPrices.length > 0 ? Math.min(...listedPrices) : 0;
 
-  const handleCustomContractSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (customAddressInput.startsWith('0x') && customAddressInput.length === 42) {
-      setContractAddress(customAddressInput);
-    }
-  };
-
   const handleBuy = (nft: OnchainNFT) => {
     setSelectedNFT(nft);
     setBuyModalOpen(true);
