@@ -67,9 +67,10 @@ export default function Footer() {
                 </a>
               </li>
               <li>
-                <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1.5">
-                  <span>{explorerName}</span>
-                  <ExternalLink className="w-3 h-3" />
+                <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1.5 text-slate-300 group">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  <span className="group-hover:underline">BOT Chain Explorer</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
                 </a>
               </li>
               <li>

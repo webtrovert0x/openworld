@@ -85,7 +85,7 @@ export default function Navbar() {
         </div>
 
         {/* Right: Ecosystem, Network & Wallet */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex items-center gap-2 sm:gap-2.5">
           {/* BOT Chain Website Link */}
           <a
             href="https://www.botchain.ai/en/"
@@ -99,17 +99,17 @@ export default function Navbar() {
             <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-indigo-400" />
           </a>
 
-          {/* Network Badge */}
+          {/* BOT Chain Explorer Link */}
           <a
             href="https://scan.botchain.ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="hidden xs:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60 text-[11px] font-mono transition-colors"
-            title="BotchainScan Block Explorer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60 hover:text-indigo-300 text-[11px] font-mono transition-colors group"
+            title="BOT Chain Explorer (https://scan.botchain.ai)"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Scan (677)</span>
-            <ExternalLink className="w-3 h-3 text-slate-400" />
+            <span>Explorer</span>
+            <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-indigo-400" />
           </a>
 
           {!isConnected ? (
