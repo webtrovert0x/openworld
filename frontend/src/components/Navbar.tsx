@@ -84,17 +84,31 @@ export default function Navbar() {
           </nav>
         </div>
 
-        {/* Right: Network & Wallet */}
-        <div className="flex items-center gap-3">
+        {/* Right: Ecosystem, Network & Wallet */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* BOT Chain Website Link */}
+          <a
+            href="https://www.botchain.ai/en/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-[#232738] hover:border-indigo-500/50 text-slate-300 hover:text-white text-[11px] font-mono transition-colors group"
+            title="BOT Chain Official Website"
+          >
+            <img src="/botchain.jpeg" alt="BOT Chain" className="w-3.5 h-3.5 rounded-full object-cover" />
+            <span className="hidden sm:inline">BOT Chain</span>
+            <ExternalLink className="w-3 h-3 text-slate-400 group-hover:text-indigo-400" />
+          </a>
+
           {/* Network Badge */}
           <a
             href="https://scan.botchain.ai"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60 text-[11px] font-mono transition-colors"
+            className="hidden xs:flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60 text-[11px] font-mono transition-colors"
+            title="BotchainScan Block Explorer"
           >
-            <img src="/botchain.jpeg" alt="BOT Chain" className="w-3.5 h-3.5 rounded-full object-cover" />
-            <span>BOT Chain (677)</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Scan (677)</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
 
