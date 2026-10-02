@@ -93,8 +93,8 @@ export default function Navbar() {
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#11131c] border border-indigo-500/30 text-indigo-400 hover:border-indigo-500/60 text-[11px] font-mono transition-colors"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-indigo-400"></span>
-            <span>Botchain (677)</span>
+            <img src="/botchain.jpeg" alt="BOT Chain" className="w-3.5 h-3.5 rounded-full object-cover" />
+            <span>BOT Chain (677)</span>
             <ExternalLink className="w-3 h-3 text-slate-400" />
           </a>
 

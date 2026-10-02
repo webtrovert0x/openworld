@@ -7,8 +7,9 @@ import { MARKETPLACE_ADDRESS, GENESIS_NFT_ADDRESS } from '../config/contracts';
 import deployed from '../config/deployedContracts.json';
 
 export default function Footer() {
-  const networkName = 'Botchain Mainnet';
+  const networkName = 'BOT Chain Mainnet';
   const chainId = 677;
+  const websiteUrl = 'https://www.botchain.ai/en/';
   const explorerUrl = 'https://scan.botchain.ai';
   const explorerName = 'BotchainScan Explorer';
   const rpcUrl = 'https://rpc.botchain.ai';
@@ -46,18 +47,33 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Network */}
+          {/* Network & Ecosystem */}
           <div className="space-y-2">
-            <h4 className="text-[11px] font-bold uppercase text-slate-300">{networkName}</h4>
+            <h4 className="text-[11px] font-bold uppercase text-slate-300 flex items-center gap-1.5">
+              <img src="/botchain.jpeg" alt="BOT Chain" className="w-4 h-4 rounded-full object-cover" />
+              <span>{networkName}</span>
+            </h4>
             <ul className="space-y-1.5 text-[11px]">
               <li>
-                <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1">
+                <a 
+                  href={websiteUrl} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-indigo-400 flex items-center gap-1.5 text-slate-200 group"
+                >
+                  <img src="/botchain.jpeg" alt="BOT Chain" className="w-3.5 h-3.5 rounded-full object-cover" />
+                  <span className="font-semibold group-hover:underline">BOT Chain Website</span>
+                  <ExternalLink className="w-3 h-3 text-slate-400" />
+                </a>
+              </li>
+              <li>
+                <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1.5">
                   <span>{explorerName}</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
               </li>
               <li>
-                <a href={rpcUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1">
+                <a href={rpcUrl} target="_blank" rel="noopener noreferrer" className="hover:text-indigo-400 flex items-center gap-1.5">
                   <span>RPC Endpoint</span>
                   <ExternalLink className="w-3 h-3" />
                 </a>
@@ -89,8 +105,18 @@ export default function Footer() {
         </div>
 
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-400">
-          <div>© {new Date().getFullYear()} OpenWorld Protocol. {networkName} ({chainId}).</div>
-          <div className="text-emerald-400 font-semibold">● Botchain Node Connected</div>
+          <div className="flex items-center gap-1.5">
+            <span>© {new Date().getFullYear()} OpenWorld Protocol. Powered by</span>
+            <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="text-indigo-400 hover:underline inline-flex items-center gap-1 font-semibold">
+              <img src="/botchain.jpeg" alt="BOT Chain" className="w-3.5 h-3.5 rounded-full object-cover" />
+              <span>BOT Chain</span>
+            </a>
+            <span>({chainId}).</span>
+          </div>
+          <div className="text-emerald-400 font-semibold flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Botchain Node Connected</span>
+          </div>
         </div>
       </div>
     </footer>
